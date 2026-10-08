@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chrono Blind Test</title>
+
+<style>
+:root {
+    --bg1: #070b16;
+    --bg2: #111827;
+    --blue: #38bdf8;
+    --purple: #8b5cf6;
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --white: #f8fafc;
+    --muted: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden;
+
+    font-family: Inter, "Segoe UI", system-ui, sans-serif;
+    color: var(--white);
+
+    background:
+        radial-gradient(circle at 50% 20%, #172554 0%, transparent 40%),
+        radial-gradient(circle at 20% 80%, #1e1b4b 0%, transparent 35%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+
+    transition:
+        background 0.6s ease,
+        filter 0.3s ease;
+}
+
+/* PARTICULES */
+
+#particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 15px currentColor;
+
+    animation: particleFly 0.9s ease-out forwards;
+}
+
+@keyframes particleFly {
+    from {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform:
+            translate(
+                calc((var(--x) - 0.5) * 500px),
+                calc((var(--y) - 0.5) * 500px)
+            )
+            scale(0);
+
+        opacity: 0;
+    }
+}
+
+/* CARTE */
+
+#game-board {
+    position: relative;
+    width: min(430px, 100%);
+    padding: 32px;
+
+    border-radius: 30px;
+
+    background: rgba(15, 23, 42, 0.72);
+
+    border: 1px solid rgba(255,255,255,0.12);
+
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.45),
+        inset 0 1px rgba(255,255,255,0.08);
+
+    text-align: center;
+
+    transition:
+        transform 0.25s cubic-bezier(.2,.8,.2,1),
+        box-shadow 0.4s ease;
+}
+
+#game-board::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+
+    border-radius: 30px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(56,189,248,.25),
+        transparent 40%,
+        rgba(139,92,246,.2)
+    );
+
+    pointer-events: none;
+}
+
+/* HEADER */
+
+.header {
+    position: relative;
+    z-index: 2;
+}
+
+h1 {
+    margin: 0;
+
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+
+    color: var(--muted);
+}
+
+.subtitle {
+    margin-top: 7px;
+    font-size: .85rem;
+    color: #64748b;
+}
+
+/* OBJECTIF */
+
+.target-label {
+    margin-top: 28px;
+
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+
+    color: var(--muted);
+}
+
+#target-display {
+    margin-top: 5px;
+
+    font-size: 3.6rem;
+    font-weight: 900;
+
+    color: var(--blue);
+
+    text-shadow:
+        0 0 15px rgba(56,189,248,.4),
+        0 0 45px rgba(56,189,248,.15);
+
+    transition: transform .25s ease;
+}
+
+/* CHRONO */
+
+#chrono-wrapper {
+    position: relative;
+
+    width: 100%;
+    height: 145px;
+
+    margin: 20px 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.06),
+            rgba(255,255,255,.015)
+        );
+
+    border: 2px solid rgba(255,255,255,.13);
+
+    box-shadow:
+        inset 0 0 30px rgba(0,0,0,.2),
+        0 0 0 rgba(56,189,248,0);
+
+    overflow: hidden;
+
+    transition:
+        border-color .4s ease,
+        box-shadow .4s ease,
+        transform .15s ease;
+}
+
+#chrono-wrapper::after {
+    content: "";
+
+    position: absolute;
+    width: 180%;
+    height: 180%;
+
+    background:
+        conic-gradient(
+            transparent,
+            rgba(56,189,248,.15),
+            transparent 30%
+        );
+
+    animation: spin 5s linear infinite;
+
+    pointer-events: none;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#chrono {
+    position: relative;
+    z-index: 2;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 4.7rem;
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    transition:
+        opacity .25s ease,
+        filter .25s ease,
+        transform .25s ease;
+}
+
+.hidden-chrono {
+    opacity: 0;
+    filter: blur(14px);
+    transform: scale(.8);
+}
+
+/* PETIT INDICATEUR */
+
+#status {
+    height: 22px;
+
+    margin-bottom: 14px;
+
+    font-size: .85rem;
+    font-weight: 700;
+
+    color: var(--muted);
+
+    transition: .3s ease;
+}
+
+/* STATS */
+
+.stats {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    flex: 1;
+
+    padding: 10px;
+
+    border-radius: 14px;
+
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.stat-label {
+    display: block;
+
+    font-size: .65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    color: #64748b;
+}
+
+.stat-value {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+/* BOUTONS */
+
+button {
+    width: 100%;
+
+    border: none;
+    border-radius: 16px;
+
+    padding: 16px;
+
+    color: white;
+
+    font-size: 1rem;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition:
+        transform .15s ease,
+        box-shadow .2s ease,
+        filter .2s ease;
+}
+
+button:hover {
+    transform: translateY(-3px);
+}
+
+button:active {
+    transform: translateY(1px) scale(.98);
+}
+
+#btn-start {
+    background: linear-gradient(135deg, #38bdf8, #2563eb);
+
+    box-shadow:
+        0 10px 30px rgba(37,99,235,.35);
+}
+
+#btn-stop {
+    display: none;
+
+    background: linear-gradient(135deg, #fb7185, #dc2626);
+
+    box-shadow:
+        0 10px 30px rgba(239,68,68,.3);
+}
+
+#btn-restart {
+    display: none;
+
+    margin-top: 10px;
+
+    background: linear-gradient(135deg, #22c55e, #059669);
+
+    box-shadow:
+        0 10px 30px rgba(16,185,129,.3);
+}
+
+/* RESULTAT */
+
+#result-text {
+    min-height: 32px;
+
+    margin: 18px 0 5px;
+
+    font-size: 1.15rem;
+    font-weight: 800;
+
+    opacity: 0;
+
+    transform: translateY(5px);
+
+    transition: .35s ease;
+}
+
+#result-text.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* PRECISION */
+
+#precision-bar {
+    height: 7px;
+
+    margin-top: 10px;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.07);
+
+    overflow: hidden;
+
+    opacity: 0;
+
+    transition: opacity .3s;
+}
+
+#precision-fill {
+    width: 0%;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: linear-gradient(
+        90deg,
+        #ef4444,
+        #f59e0b,
+        #22c55e
+    );
+
+    transition: width .6s cubic-bezier(.2,.8,.2,1);
+}
+
+/* ETATS */
+
+body.perfect {
+    background:
+        radial-gradient(circle at center, #064e3b, transparent 45%),
+        linear-gradient(135deg, #022c22, #052e16);
+}
+
+body.good {
+    background:
+        radial-gradient(circle at center, #78350f, transparent 45%),
+        linear-gradient(135deg, #451a03, #422006);
+}
+
+body.bad {
+    background:
+        radial-gradient(circle at center, #7f1d1d, transparent 45%),
+        linear-gradient(135deg, #450a0a, #1c0707);
+}
+
+.perfect #chrono-wrapper {
+    border-color: rgba(34,197,94,.7);
+
+    box-shadow:
+        0 0 35px rgba(34,197,94,.25),
+        inset 0 0 30px rgba(34,197,94,.08);
+}
+
+.good #chrono-wrapper {
+    border-color: rgba(245,158,11,.7);
+
+    box-shadow:
+        0 0 30px rgba(245,158,11,.2);
+}
+
+.bad #chrono-wrapper {
+    border-color: rgba(239,68,68,.7);
+
+    box-shadow:
+        0 0 30px rgba(239,68,68,.2);
+}
+
+/* ANIMATIONS */
+
+.pop {
+    animation: pop .4s cubic-bezier(.2,1.5,.5,1);
+}
+
+.shake {
+    animation: shake .35s ease;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.07); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+}
+
+/* MOBILE */
+
+@media(max-width:500px) {
+
+    #game-board {
+        padding: 24px;
+    }
+
+    #target-display {
+        font-size: 3rem;
+    }
+
+    #chrono {
+        font-size: 3.8rem;
+    }
+
+    #chrono-wrapper {
+        height: 130px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="particles"></div>
+
+<div id="game-board">
+
+    <div class="header">
+        <h1>Chrono Blind Test</h1>
+        <div class="subtitle">
+            Arrête le temps au bon moment.
+        </div>
+    </div>
+
+    <div class="target-label">
+        Objectif
+    </div>
+
+    <div id="target-display">
+        0.00 s
+    </div>
+
+    <div id="chrono-wrapper">
+        <div id="chrono">0.00</div>
+    </div>
+
+    <div id="status">
+        Appuie sur PRÊT pour commencer
+    </div>
+
+    <div class="stats">
+
+        <div class="stat">
+            <span class="stat-label">Série</span>
+            <span class="stat-value" id="combo">0 🔥</span>
+        </div>
+
+        <div class="stat">
+            <span class="stat-label">Record</span>
+            <span class="stat-value" id="best">--</span>
+        </div>
+
+        <div class="stat">
+            <span class="stat-label">Parties</span>
+            <span class="stat-value" id="games">0</span>
+        </div>
+
+    </div>
+
+    <button id="btn-start">
+        Prêt
+    </button>
+
+    <button id="btn-stop">
+        Stop !
+    </button>
+
+    <div id="result-text"></div>
+
+    <div id="precision-bar">
+        <div id="precision-fill"></div>
+    </div>
+
+    <button id="btn-restart">
+        Recommencer
+    </button>
+
+</div>
+
+<script>
+
+/* =========================
+   AUDIO
+========================= */
+
+let audioCtx;
+
+function initAudio() {
+
+    if (!audioCtx) {
+        audioCtx = new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+    }
+
+    if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+    }
+}
+
+function tone(
+    frequency,
+    duration = .15,
+    type = "sine",
+    volume = .08
+) {
+
+    initAudio();
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = type;
+
+    osc.frequency.setValueAtTime(
+        frequency,
+        audioCtx.currentTime
+    );
+
+    gain.gain.setValueAtTime(
+        volume,
+        audioCtx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        .001,
+        audioCtx.currentTime + duration
+    );
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start();
+
+    osc.stop(
+        audioCtx.currentTime + duration
+    );
+}
+
+function startSound() {
+
+    tone(440, .08, "sine", .08);
+
+    setTimeout(() => {
+        tone(660, .08, "sine", .08);
+    }, 80);
+
+}
+
+function hideSound() {
+
+    tone(220, .25, "sine", .05);
+
+}
+
+function perfectSound() {
+
+    tone(523, .12, "sine", .12);
+
+    setTimeout(() => {
+        tone(659, .12, "sine", .12);
+    }, 90);
+
+    setTimeout(() => {
+        tone(784, .18, "sine", .15);
+    }, 180);
+
+}
+
+function goodSound() {
+
+    tone(440, .18, "triangle", .1);
+
+    setTimeout(() => {
+        tone(554, .15, "triangle", .08);
+    }, 100);
+
+}
+
+function badSound() {
+
+    tone(180, .25, "sawtooth", .06);
+
+    setTimeout(() => {
+        tone(120, .3, "sawtooth", .04);
+    }, 120);
+
+}
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const targetDisplay =
+    document.getElementById("target-display");
+
+const chrono =
+    document.getElementById("chrono");
+
+const chronoWrapper =
+    document.getElementById("chrono-wrapper");
+
+const status =
+    document.getElementById("status");
+
+const resultText =
+    document.getElementById("result-text");
+
+const btnStart =
+    document.getElementById("btn-start");
+
+const btnStop =
+    document.getElementById("btn-stop");
+
+const btnRestart =
+    document.getElementById("btn-restart");
+
+const precisionBar =
+    document.getElementById("precision-bar");
+
+const precisionFill =
+    document.getElementById("precision-fill");
+
+const comboDisplay =
+    document.getElementById("combo");
+
+const bestDisplay =
+    document.getElementById("best");
+
+const gamesDisplay =
+    document.getElementById("games");
+
+const board =
+    document.getElementById("game-board");
+
+const particles =
+    document.getElementById("particles");
+
+/* =========================
+   VARIABLES
+========================= */
+
+let targetTime = 0;
+let startTime = 0;
+
+let animationFrame;
+
+let running = false;
+let hidden = false;
+
+let combo = 0;
+let games = 0;
+
+let best = localStorage.getItem(
+    "chronoBest"
+);
+
+if (best !== null) {
+    best = parseFloat(best);
+}
+
+/* =========================
+   PARTICULES
+========================= */
+
+function createParticles(amount = 30) {
+
+    for (let i = 0; i < amount; i++) {
+
+        const particle =
+            document.createElement("div");
+
+        particle.className = "particle";
+
+        particle.style.left =
+            "50%";
+
+        particle.style.top =
+            "50%";
+
+        particle.style.setProperty(
+            "--x",
+            Math.random()
+        );
+
+        particle.style.setProperty(
+            "--y",
+            Math.random()
+        );
+
+        particle.style.color =
+            Math.random() > .5
+                ? "#38bdf8"
+                : "#22c55e";
+
+        particles.appendChild(
+            particle
+        );
+
+        setTimeout(() => {
+            particle.remove();
+        }, 1000);
+    }
+}
+
+/* =========================
+   NOUVELLE PARTIE
+========================= */
+
+function initGame() {
+
+    document.body.className = "";
+
+    board.classList.remove(
+        "pop",
+        "shake"
+    );
+
+    targetTime =
+        (Math.floor(
+            Math.random() * 71
+        ) + 30) / 10;
+
+    targetDisplay.textContent =
+        targetTime.toFixed(2) + " s";
+
+    chrono.textContent =
+        "0.00";
+
+    chrono.classList.remove(
+        "hidden-chrono"
+    );
+
+    btnStart.style.display =
+        "block";
+
+    btnStop.style.display =
+        "none";
+
+    btnRestart.style.display =
+        "none";
+
+    resultText.classList.remove(
+        "show"
+    );
+
+    precisionBar.style.opacity =
+        "0";
+
+    precisionFill.style.width =
+        "0%";
+
+    status.textContent =
+        "Appuie sur PRÊT pour commencer";
+
+    status.style.color =
+        "#94a3b8";
+
+    hidden = false;
+}
+
+/* =========================
+   START
+========================= */
+
+btnStart.addEventListener(
+    "click",
+    () => {
+
+        initAudio();
+
+        startSound();
+
+        btnStart.style.display =
+            "none";
+
+        btnStop.style.display =
+            "block";
+
+        status.textContent =
+            "Le chrono tourne...";
+
+        status.style.color =
+            "#38bdf8";
+
+        startTime =
+            performance.now();
+
+        running = true;
+
+        updateChrono();
+    }
+);
+
+/* =========================
+   CHRONO
+========================= */
+
+function updateChrono() {
+
+    if (!running)
+        return;
+
+    const elapsed =
+        (performance.now() -
+            startTime) / 1000;
+
+    if (!hidden) {
+
+        chrono.textContent =
+            elapsed.toFixed(2);
+
+    }
+
+    /* disparition à 1.5 seconde */
+
+    if (
+        elapsed >= 1.5 &&
+        !hidden
+    ) {
+
+        hidden = true;
+
+        chrono.classList.add(
+            "hidden-chrono"
+        );
+
+        status.textContent =
+            "Le temps est caché 👀";
+
+        hideSound();
+    }
+
+    animationFrame =
+        requestAnimationFrame(
+            updateChrono
+        );
+}
+
+/* =========================
+   STOP
+========================= */
+
+btnStop.addEventListener(
+    "click",
+    stopGame
+);
+
+function stopGame() {
+
+    if (!running)
+        return;
+
+    running = false;
+
+    cancelAnimationFrame(
+        animationFrame
+    );
+
+    const finalTime =
+        (performance.now() -
+            startTime) / 1000;
+
+    const difference =
+        Math.abs(
+            finalTime -
+            targetTime
+        );
+
+    games++;
+
+    gamesDisplay.textContent =
+        games;
+
+    chrono.textContent =
+        finalTime.toFixed(2);
+
+    chrono.classList.remove(
+        "hidden-chrono"
+    );
+
+    btnStop.style.display =
+        "none";
+
+    btnRestart.style.display =
+        "block";
+
+    precisionBar.style.opacity =
+        "1";
+
+    /*
+        0.00 = parfait
+        0.50 = déjà moyen
+        1.50+ = mauvais
+    */
+
+    const precision =
+        Math.max(
+            0,
+            100 -
+            (difference / 1.5) * 100
+        );
+
+    precisionFill.style.width =
+        precision + "%";
+
+    /* =====================
+       PARFAIT
+    ===================== */
+
+    if (difference <= .10) {
+
+        combo++;
+
+        document.body.className =
+            "perfect";
+
+        resultText.textContent =
+            difference === 0
+                ? "PERFECT ! 🎯"
+                : `INCROYABLE ! Écart : ${difference.toFixed(2)} s 🔥`;
+
+        resultText.style.color =
+            "#22c55e";
+
+        status.textContent =
+            "Timing absolument chirurgical.";
+
+        status.style.color =
+            "#22c55e";
+
+        comboDisplay.textContent =
+            combo + " 🔥";
+
+        board.classList.add(
+            "pop"
+        );
+
+        createParticles(45);
+
+        perfectSound();
+
+    }
+
+    /* =====================
+       BIEN
+    ===================== */
+
+    else if (difference <= .50) {
+
+        combo = 0;
+
+        document.body.className =
+            "good";
+
+        resultText.textContent =
+            `Pas mal ! Écart : ${difference.toFixed(2)} s`;
+
+        resultText.style.color =
+            "#f59e0b";
+
+        status.textContent =
+            finalTime > targetTime
+                ? "Un peu trop tard..."
+                : "Un peu trop tôt...";
+
+        status.style.color =
+            "#f59e0b";
+
+        comboDisplay.textContent =
+            "0 🔥";
+
+        board.classList.add(
+            "pop"
+        );
+
+        goodSound();
+
+    }
+
+    /* =====================
+       RATÉ
+    ===================== */
+
+    else {
+
+        combo = 0;
+
+        document.body.className =
+            "bad";
+
+        resultText.textContent =
+            finalTime > targetTime
+                ? `Trop tard ! +${difference.toFixed(2)} s ❌`
+                : `Trop tôt ! -${difference.toFixed(2)} s ❌`;
+
+        resultText.style.color =
+            "#ef4444";
+
+        status.textContent =
+            "Tu peux faire mieux.";
+
+        status.style.color =
+            "#ef4444";
+
+        comboDisplay.textContent =
+            "0 🔥";
+
+        board.classList.add(
+            "shake"
+        );
+
+        badSound();
+    }
+
+    /* =====================
+       RECORD
+    ===================== */
+
+    if (
+        best === null ||
+        difference < best
+    ) {
+
+        best = difference;
+
+        localStorage.setItem(
+            "chronoBest",
+            best
+        );
+
+        bestDisplay.textContent =
+            best.toFixed(2) + " s";
+
+    }
+
+    resultText.classList.add(
+        "show"
+    );
+}
+
+/* =========================
+   RESTART
+========================= */
+
+btnRestart.addEventListener(
+    "click",
+    () => {
+
+        tone(
+            600,
+            .08,
+            "sine",
+            .08
+        );
+
+        initGame();
+    }
+);
+
+/* =========================
+   CLAVIER
+========================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.code !==
+            "Space"
+        )
+            return;
+
+        event.preventDefault();
+
+        if (
+            !running &&
+            btnStart.style.display !==
+            "none"
+        ) {
+
+            btnStart.click();
+
+        } else if (running) {
+
+            btnStop.click();
+
+        }
+    }
+);
+
+/* =========================
+   RECORD AU CHARGEMENT
+========================= */
+
+if (best !== null) {
+
+    bestDisplay.textContent =
+        best.toFixed(2) + " s";
+
+}
+
+/* =========================
+   INIT
+========================= */
+
+initGame();
+
+</script>
+
+</body>
+</html>
