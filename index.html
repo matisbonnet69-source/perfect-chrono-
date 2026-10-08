@@ -1,1223 +1,1803 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chrono Blind Test</title>
-
-<style>
-:root {
-    --bg1: #070b16;
-    --bg2: #111827;
-    --blue: #38bdf8;
-    --purple: #8b5cf6;
-    --green: #22c55e;
-    --orange: #f59e0b;
-    --red: #ef4444;
-    --white: #f8fafc;
-    --muted: #94a3b8;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    overflow: hidden;
-
-    font-family: Inter, "Segoe UI", system-ui, sans-serif;
-    color: var(--white);
-
-    background:
-        radial-gradient(circle at 50% 20%, #172554 0%, transparent 40%),
-        radial-gradient(circle at 20% 80%, #1e1b4b 0%, transparent 35%),
-        linear-gradient(135deg, var(--bg1), var(--bg2));
-
-    transition:
-        background 0.6s ease,
-        filter 0.3s ease;
-}
-
-/* PARTICULES */
-
-#particles {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.particle {
-    position: absolute;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--blue);
-    box-shadow: 0 0 15px currentColor;
-
-    animation: particleFly 0.9s ease-out forwards;
-}
-
-@keyframes particleFly {
-    from {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-    }
-
-    to {
-        transform:
-            translate(
-                calc((var(--x) - 0.5) * 500px),
-                calc((var(--y) - 0.5) * 500px)
-            )
-            scale(0);
-
-        opacity: 0;
-    }
-}
-
-/* CARTE */
-
-#game-board {
-    position: relative;
-    width: min(430px, 100%);
-    padding: 32px;
-
-    border-radius: 30px;
-
-    background: rgba(15, 23, 42, 0.72);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrono Blind Test</title>
+
+    <style>
+        :root {
+            --bg: #101114;
+            --panel: #181a1f;
+            --panel-light: #202329;
+            --border: #3a3d44;
+            --text: #f3f4f6;
+            --muted: #8b909a;
+
+            --red: #ff3b30;
+            --green: #38d27a;
+            --yellow: #f4c542;
+            --orange: #f4a62a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
 
-    border: 1px solid rgba(255,255,255,0.12);
-
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-
-    box-shadow:
-        0 30px 80px rgba(0,0,0,0.45),
-        inset 0 1px rgba(255,255,255,0.08);
+        body {
+            min-height: 100vh;
+            padding: 24px;
 
-    text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 22px;
 
-    transition:
-        transform 0.25s cubic-bezier(.2,.8,.2,1),
-        box-shadow 0.4s ease;
-}
+            background: var(--bg);
+            color: var(--text);
 
-#game-board::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
+            font-family:
+                Inter,
+                "Segoe UI",
+                Arial,
+                sans-serif;
 
-    border-radius: 30px;
+            overflow-x: hidden;
+            user-select: none;
 
-    background: linear-gradient(
-        135deg,
-        rgba(56,189,248,.25),
-        transparent 40%,
-        rgba(139,92,246,.2)
-    );
+            transition:
+                background-color 0.45s ease;
+        }
 
-    pointer-events: none;
-}
+        /* =========================================================
+           LAYOUT
+        ========================================================= */
 
-/* HEADER */
+        #game-board {
+            width: min(470px, 100%);
 
-.header {
-    position: relative;
-    z-index: 2;
-}
+            background: var(--panel);
 
-h1 {
-    margin: 0;
+            border: 1px solid #2b2e34;
+            border-radius: 16px;
 
-    font-size: 1.1rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
+            padding: 30px;
 
-    color: var(--muted);
-}
+            box-shadow:
+                0 18px 40px rgba(0, 0, 0, 0.35);
 
-.subtitle {
-    margin-top: 7px;
-    font-size: .85rem;
-    color: #64748b;
-}
+            transition:
+                transform 0.2s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+        }
 
-/* OBJECTIF */
+        /* =========================================================
+           HEADER
+        ========================================================= */
 
-.target-label {
-    margin-top: 28px;
+        .top-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-    font-size: .75rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
+            margin-bottom: 4px;
+        }
 
-    color: var(--muted);
-}
+        .title {
+            margin: 0;
 
-#target-display {
-    margin-top: 5px;
+            font-size: 0.88rem;
+            font-weight: 800;
 
-    font-size: 3.6rem;
-    font-weight: 900;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
 
-    color: var(--blue);
+            color: #dfe2e7;
+        }
 
-    text-shadow:
-        0 0 15px rgba(56,189,248,.4),
-        0 0 45px rgba(56,189,248,.15);
+        .keyboard-tip {
+            font-size: 0.72rem;
+            color: #6f747e;
+        }
 
-    transition: transform .25s ease;
-}
+        .subtitle {
+            margin-top: 5px;
 
-/* CHRONO */
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
 
-#chrono-wrapper {
-    position: relative;
+        /* =========================================================
+           OBJECTIF
+        ========================================================= */
 
-    width: 100%;
-    height: 145px;
+        .target-section {
+            margin-top: 24px;
+            text-align: center;
+        }
 
-    margin: 20px 0;
+        .target-label {
+            font-size: 0.68rem;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
 
-    border-radius: 25px;
+            color: #7f848e;
+        }
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.06),
-            rgba(255,255,255,.015)
-        );
+        #target-display {
+            margin-top: 5px;
 
-    border: 2px solid rgba(255,255,255,.13);
+            font-size: 3rem;
+            font-weight: 850;
 
-    box-shadow:
-        inset 0 0 30px rgba(0,0,0,.2),
-        0 0 0 rgba(56,189,248,0);
+            letter-spacing: 0.5px;
 
-    overflow: hidden;
+            color: #f0f2f5;
+        }
 
-    transition:
-        border-color .4s ease,
-        box-shadow .4s ease,
-        transform .15s ease;
-}
+        /* =========================================================
+           VRAI CADRE DU CHRONO
+        ========================================================= */
 
-#chrono-wrapper::after {
-    content: "";
+        #chrono-wrapper {
+            position: relative;
 
-    position: absolute;
-    width: 180%;
-    height: 180%;
+            height: 150px;
 
-    background:
-        conic-gradient(
-            transparent,
-            rgba(56,189,248,.15),
-            transparent 30%
-        );
+            margin-top: 22px;
+            margin-bottom: 17px;
 
-    animation: spin 5s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-    pointer-events: none;
-}
+            background: #0d0e11;
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
+            border: 6px solid #565b64;
+            border-radius: 10px;
 
-#chrono {
-    position: relative;
-    z-index: 2;
+            box-shadow:
+                inset 0 0 0 2px #17191d,
+                inset 0 0 24px rgba(0, 0, 0, 0.55);
 
-    font-family: "Courier New", monospace;
+            overflow: hidden;
 
-    font-size: 4.7rem;
-    font-weight: 900;
+            transition:
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                transform 0.15s ease;
+        }
 
-    letter-spacing: 2px;
+        /* petite ligne interne de style écran */
+        #chrono-wrapper::before {
+            content: "";
 
-    transition:
-        opacity .25s ease,
-        filter .25s ease,
-        transform .25s ease;
-}
+            position: absolute;
+            inset: 9px;
 
-.hidden-chrono {
-    opacity: 0;
-    filter: blur(14px);
-    transform: scale(.8);
-}
+            border: 1px solid rgba(255, 255, 255, 0.045);
+            border-radius: 4px;
 
-/* PETIT INDICATEUR */
+            pointer-events: none;
+        }
 
-#status {
-    height: 22px;
+        /* =========================================================
+           CHIFFRES TYPE REVEIL
+        ========================================================= */
 
-    margin-bottom: 14px;
+        #chrono {
+            position: relative;
+            z-index: 2;
 
-    font-size: .85rem;
-    font-weight: 700;
+            font-family:
+                "Courier New",
+                Consolas,
+                monospace;
 
-    color: var(--muted);
+            font-size: clamp(4rem, 12vw, 5.5rem);
+            font-weight: 900;
 
-    transition: .3s ease;
-}
+            letter-spacing: 3px;
 
-/* STATS */
+            color: var(--red);
 
-.stats {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+            font-variant-numeric: tabular-nums;
 
-.stat {
-    flex: 1;
+            /*
+                Effet contour noir autour des chiffres
+                pour donner un vrai aspect afficheur.
+            */
+            text-shadow:
+                2px 0 0 #050505,
+                -2px 0 0 #050505,
+                0 2px 0 #050505,
+                0 -2px 0 #050505,
+                2px 2px 0 #050505,
+                -2px -2px 0 #050505,
+                0 0 8px rgba(255, 59, 48, 0.18);
 
-    padding: 10px;
+            transition:
+                opacity 0.5s ease,
+                filter 0.5s ease,
+                transform 0.5s ease;
+        }
 
-    border-radius: 14px;
+        /*
+            IMPORTANT :
+            seul le chiffre disparaît.
+            Le cadre reste parfaitement visible.
+        */
+        .hidden-chrono {
+            opacity: 0;
+            filter: blur(8px);
+            transform: scale(0.96);
+        }
 
-    background: rgba(255,255,255,.04);
-    border: 1px solid rgba(255,255,255,.06);
-}
+        /* =========================================================
+           STATUS
+        ========================================================= */
 
-.stat-label {
-    display: block;
+        #status {
+            min-height: 21px;
 
-    font-size: .65rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+            text-align: center;
 
-    color: #64748b;
-}
+            font-size: 0.78rem;
+            font-weight: 700;
 
-.stat-value {
-    display: block;
+            color: var(--muted);
 
-    margin-top: 4px;
+            transition:
+                color 0.25s ease;
+        }
 
-    font-size: 1.05rem;
-    font-weight: 800;
-}
+        /* =========================================================
+           RECORD
+        ========================================================= */
 
-/* BOUTONS */
+        .record-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
 
-button {
-    width: 100%;
+            margin-top: 13px;
+            margin-bottom: 20px;
 
-    border: none;
-    border-radius: 16px;
+            font-size: 0.78rem;
+        }
 
-    padding: 16px;
+        .record-label {
+            color: #70757f;
+        }
 
-    color: white;
+        #best {
+            font-weight: 800;
+            color: #dce0e6;
+        }
 
-    font-size: 1rem;
-    font-weight: 800;
+        /* =========================================================
+           BOUTONS
+        ========================================================= */
 
-    letter-spacing: 1px;
-    text-transform: uppercase;
+        button {
+            width: 100%;
 
-    cursor: pointer;
+            padding: 15px 18px;
 
-    transition:
-        transform .15s ease,
-        box-shadow .2s ease,
-        filter .2s ease;
-}
+            border-radius: 10px;
 
-button:hover {
-    transform: translateY(-3px);
-}
+            border: 1px solid transparent;
 
-button:active {
-    transform: translateY(1px) scale(.98);
-}
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 800;
 
-#btn-start {
-    background: linear-gradient(135deg, #38bdf8, #2563eb);
+            cursor: pointer;
 
-    box-shadow:
-        0 10px 30px rgba(37,99,235,.35);
-}
+            transition:
+                transform 0.15s ease,
+                filter 0.15s ease,
+                box-shadow 0.15s ease,
+                background-color 0.15s ease;
+        }
 
-#btn-stop {
-    display: none;
+        button:hover {
+            transform: translateY(-1px);
+        }
 
-    background: linear-gradient(135deg, #fb7185, #dc2626);
+        button:active {
+            transform: translateY(1px);
+        }
 
-    box-shadow:
-        0 10px 30px rgba(239,68,68,.3);
-}
+        #btn-start {
+            background: #f1f2f4;
+            color: #111318;
 
-#btn-restart {
-    display: none;
+            box-shadow:
+                0 5px 14px rgba(0, 0, 0, 0.22);
+        }
 
-    margin-top: 10px;
+        #btn-start:hover {
+            filter: brightness(1.05);
+        }
 
-    background: linear-gradient(135deg, #22c55e, #059669);
+        #btn-stop {
+            display: none;
 
-    box-shadow:
-        0 10px 30px rgba(16,185,129,.3);
-}
+            background: #df3028;
+            color: white;
 
-/* RESULTAT */
+            box-shadow:
+                0 6px 18px rgba(223, 48, 40, 0.22);
+        }
 
-#result-text {
-    min-height: 32px;
+        #btn-stop:hover {
+            filter: brightness(1.08);
+        }
 
-    margin: 18px 0 5px;
+        #btn-restart {
+            display: none;
 
-    font-size: 1.15rem;
-    font-weight: 800;
+            margin-top: 10px;
 
-    opacity: 0;
+            background: #25282e;
+            color: #f3f4f6;
 
-    transform: translateY(5px);
+            border-color: #3b3f46;
+        }
 
-    transition: .35s ease;
-}
+        #btn-restart:hover {
+            background: #2d3037;
+        }
 
-#result-text.show {
-    opacity: 1;
-    transform: translateY(0);
-}
+        /* =========================================================
+           RESULTAT
+        ========================================================= */
 
-/* PRECISION */
+        #result-text {
+            min-height: 31px;
 
-#precision-bar {
-    height: 7px;
+            margin-top: 18px;
 
-    margin-top: 10px;
+            text-align: center;
 
-    border-radius: 999px;
+            font-size: 1rem;
+            font-weight: 850;
 
-    background: rgba(255,255,255,.07);
+            opacity: 0;
 
-    overflow: hidden;
+            transform: translateY(5px);
 
-    opacity: 0;
+            transition:
+                opacity 0.25s ease,
+                transform 0.25s ease;
+        }
 
-    transition: opacity .3s;
-}
+        #result-text.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-#precision-fill {
-    width: 0%;
-    height: 100%;
+        /* =========================================================
+           BARRE DE PRECISION
+        ========================================================= */
 
-    border-radius: inherit;
+        #precision-bar {
+            height: 5px;
 
-    background: linear-gradient(
-        90deg,
-        #ef4444,
-        #f59e0b,
-        #22c55e
-    );
+            margin-top: 10px;
 
-    transition: width .6s cubic-bezier(.2,.8,.2,1);
-}
+            overflow: hidden;
 
-/* ETATS */
+            border-radius: 999px;
 
-body.perfect {
-    background:
-        radial-gradient(circle at center, #064e3b, transparent 45%),
-        linear-gradient(135deg, #022c22, #052e16);
-}
+            background: #282b31;
 
-body.good {
-    background:
-        radial-gradient(circle at center, #78350f, transparent 45%),
-        linear-gradient(135deg, #451a03, #422006);
-}
+            opacity: 0;
 
-body.bad {
-    background:
-        radial-gradient(circle at center, #7f1d1d, transparent 45%),
-        linear-gradient(135deg, #450a0a, #1c0707);
-}
+            transition:
+                opacity 0.25s ease;
+        }
 
-.perfect #chrono-wrapper {
-    border-color: rgba(34,197,94,.7);
+        #precision-fill {
+            width: 0%;
+            height: 100%;
 
-    box-shadow:
-        0 0 35px rgba(34,197,94,.25),
-        inset 0 0 30px rgba(34,197,94,.08);
-}
+            border-radius: inherit;
 
-.good #chrono-wrapper {
-    border-color: rgba(245,158,11,.7);
+            background: var(--green);
 
-    box-shadow:
-        0 0 30px rgba(245,158,11,.2);
-}
+            transition:
+                width 0.45s ease,
+                background-color 0.25s ease;
+        }
 
-.bad #chrono-wrapper {
-    border-color: rgba(239,68,68,.7);
+        /* =========================================================
+           PANNEAU DES PROBABILITES
+        ========================================================= */
 
-    box-shadow:
-        0 0 30px rgba(239,68,68,.2);
-}
+        #rarity-panel {
+            width: 220px;
 
-/* ANIMATIONS */
+            padding: 18px;
 
-.pop {
-    animation: pop .4s cubic-bezier(.2,1.5,.5,1);
-}
+            background: #17191d;
 
-.shake {
-    animation: shake .35s ease;
-}
+            border: 1px solid #2d3036;
+            border-radius: 14px;
 
-@keyframes pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.07); }
-    100% { transform: scale(1); }
-}
+            box-shadow:
+                0 16px 35px rgba(0, 0, 0, 0.25);
+        }
 
-@keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25% { transform: translateX(-8px); }
-    75% { transform: translateX(8px); }
-}
+        .rarity-title {
+            margin: 0;
 
-/* MOBILE */
+            font-size: 0.76rem;
+            font-weight: 850;
 
-@media(max-width:500px) {
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
 
-    #game-board {
-        padding: 24px;
-    }
+            color: #e5e7eb;
+        }
 
-    #target-display {
-        font-size: 3rem;
-    }
+        .rarity-subtitle {
+            margin-top: 4px;
+            margin-bottom: 15px;
 
-    #chrono {
-        font-size: 3.8rem;
-    }
+            font-size: 0.7rem;
 
-    #chrono-wrapper {
-        height: 130px;
-    }
-}
-</style>
+            line-height: 1.4;
+
+            color: #727780;
+        }
+
+        .rarity-row {
+            display: flex;
+            align-items: center;
+
+            padding: 10px 0;
+
+            border-top: 1px solid #25282e;
+        }
+
+        .rarity-row:first-of-type {
+            border-top: none;
+        }
+
+        .rarity-dot {
+            width: 10px;
+            height: 10px;
+
+            flex: 0 0 auto;
+
+            margin-right: 10px;
+
+            border-radius: 50%;
+        }
+
+        .dot-yellow {
+            background: var(--yellow);
+        }
+
+        .dot-green {
+            background: var(--green);
+        }
+
+        .dot-orange {
+            background: var(--orange);
+        }
+
+        .dot-red {
+            background: var(--red);
+        }
+
+        .rarity-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .rarity-name {
+            font-size: 0.76rem;
+            font-weight: 800;
+
+            color: #e3e5e8;
+        }
+
+        .rarity-rule {
+            margin-top: 2px;
+
+            font-size: 0.67rem;
+            color: #717680;
+        }
+
+        .rarity-probability {
+            margin-left: 8px;
+
+            font-size: 0.72rem;
+            font-weight: 850;
+
+            color: #c9cdd3;
+        }
+
+        .perfect-explain {
+            margin-top: 14px;
+            padding: 10px;
+
+            border-radius: 9px;
+
+            background: rgba(244, 197, 66, 0.08);
+            border: 1px solid rgba(244, 197, 66, 0.17);
+
+            font-size: 0.68rem;
+            line-height: 1.45;
+
+            color: #a4a8af;
+        }
+
+        .perfect-explain strong {
+            color: var(--yellow);
+        }
+
+        /* =========================================================
+           ETATS DU JEU
+        ========================================================= */
+
+        body.result-perfect {
+            background: #4b4018;
+        }
+
+        body.result-green {
+            background: #123523;
+        }
+
+        body.result-orange {
+            background: #38290f;
+        }
+
+        body.result-red {
+            background: #341517;
+        }
+
+        body.result-perfect #chrono-wrapper {
+            border-color: #b59a38;
+
+            box-shadow:
+                inset 0 0 0 2px #17130a,
+                inset 0 0 24px rgba(244, 197, 66, 0.06),
+                0 0 22px rgba(244, 197, 66, 0.12);
+        }
+
+        body.result-green #chrono-wrapper {
+            border-color: #4e8062;
+
+            box-shadow:
+                inset 0 0 0 2px #111812,
+                0 0 20px rgba(56, 210, 122, 0.08);
+        }
+
+        body.result-orange #chrono-wrapper {
+            border-color: #8d6e38;
+        }
+
+        body.result-red #chrono-wrapper {
+            border-color: #894348;
+        }
+
+        /* =========================================================
+           ANIMATIONS RESULTAT
+        ========================================================= */
+
+        .pop {
+            animation: popResult 0.35s ease-out;
+        }
+
+        .shake {
+            animation: shakeResult 0.3s ease;
+        }
+
+        @keyframes popResult {
+            0% {
+                transform: scale(1);
+            }
+
+            45% {
+                transform: scale(1.025);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shakeResult {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* =========================================================
+           CONFETTIS
+        ========================================================= */
+
+        #confetti-container {
+            position: fixed;
+            inset: 0;
+
+            pointer-events: none;
+
+            overflow: hidden;
+
+            z-index: 100;
+        }
+
+        .confetti {
+            position: absolute;
+
+            top: -20px;
+
+            width: 8px;
+            height: 14px;
+
+            opacity: 0.95;
+
+            animation:
+                confettiFall
+                var(--duration)
+                cubic-bezier(.15,.65,.25,1)
+                forwards;
+
+            transform:
+                translateX(0)
+                rotate(0deg);
+        }
+
+        @keyframes confettiFall {
+
+            from {
+                transform:
+                    translate3d(
+                        0,
+                        0,
+                        0
+                    )
+                    rotate(0deg);
+            }
+
+            to {
+                transform:
+                    translate3d(
+                        var(--drift),
+                        110vh,
+                        0
+                    )
+                    rotate(
+                        var(--rotation)
+                    );
+            }
+        }
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 760px) {
+
+            body {
+                flex-direction: column;
+
+                justify-content: center;
+
+                padding:
+                    18px 14px 22px;
+
+                gap: 14px;
+            }
+
+            #game-board {
+                width: min(470px, 100%);
+            }
+
+            #rarity-panel {
+                width: min(470px, 100%);
+            }
+
+            .keyboard-tip {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            #game-board {
+                padding: 22px;
+            }
+
+            #chrono-wrapper {
+                height: 132px;
+                border-width: 5px;
+            }
+
+            #target-display {
+                font-size: 2.65rem;
+            }
+
+            #chrono {
+                font-size: 3.75rem;
+                letter-spacing: 2px;
+            }
+
+            #rarity-panel {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="particles"></div>
+    <main id="game-board">
 
-<div id="game-board">
+        <div class="top-line">
+            <h1 class="title">Chrono Blind Test</h1>
 
-    <div class="header">
-        <h1>Chrono Blind Test</h1>
+            <div class="keyboard-tip">
+                ESPACE
+            </div>
+        </div>
+
         <div class="subtitle">
-            Arrête le temps au bon moment.
-        </div>
-    </div>
-
-    <div class="target-label">
-        Objectif
-    </div>
-
-    <div id="target-display">
-        0.00 s
-    </div>
-
-    <div id="chrono-wrapper">
-        <div id="chrono">0.00</div>
-    </div>
-
-    <div id="status">
-        Appuie sur PRÊT pour commencer
-    </div>
-
-    <div class="stats">
-
-        <div class="stat">
-            <span class="stat-label">Série</span>
-            <span class="stat-value" id="combo">0 🔥</span>
+            Arrête le chrono au plus près de l'objectif.
         </div>
 
-        <div class="stat">
-            <span class="stat-label">Record</span>
-            <span class="stat-value" id="best">--</span>
+        <section class="target-section">
+            <div class="target-label">
+                Objectif
+            </div>
+
+            <div id="target-display">
+                0.00 s
+            </div>
+        </section>
+
+        <section id="chrono-wrapper">
+            <div id="chrono">
+                0.00
+            </div>
+        </section>
+
+        <div id="status">
+            Clique sur « Démarrer ».
         </div>
 
-        <div class="stat">
-            <span class="stat-label">Parties</span>
-            <span class="stat-value" id="games">0</span>
+        <div class="record-line">
+            <span class="record-label">
+                Meilleur écart
+            </span>
+
+            <span id="best">
+                —
+            </span>
         </div>
 
-    </div>
+        <button id="btn-start">
+            Démarrer
+        </button>
 
-    <button id="btn-start">
-        Prêt
-    </button>
+        <button id="btn-stop">
+            Stop
+        </button>
 
-    <button id="btn-stop">
-        Stop !
-    </button>
+        <div id="result-text"></div>
 
-    <div id="result-text"></div>
+        <div id="precision-bar">
+            <div id="precision-fill"></div>
+        </div>
 
-    <div id="precision-bar">
-        <div id="precision-fill"></div>
-    </div>
+        <button id="btn-restart">
+            Nouvelle manche
+        </button>
 
-    <button id="btn-restart">
-        Recommencer
-    </button>
+    </main>
 
-</div>
 
-<script>
+    <aside id="rarity-panel">
 
-/* =========================
-   AUDIO
-========================= */
+        <h2 class="rarity-title">
+            Rareté du chrono
+        </h2>
 
-let audioCtx;
+        <div class="rarity-subtitle">
+            Probabilités indicatives pour donner
+            une idée de la difficulté.
+        </div>
 
-function initAudio() {
+        <div class="rarity-row">
 
-    if (!audioCtx) {
-        audioCtx = new (
-            window.AudioContext ||
-            window.webkitAudioContext
-        )();
-    }
+            <div class="rarity-dot dot-yellow"></div>
 
-    if (audioCtx.state === "suspended") {
-        audioCtx.resume();
-    }
-}
+            <div class="rarity-info">
 
-function tone(
-    frequency,
-    duration = .15,
-    type = "sine",
-    volume = .08
-) {
+                <div class="rarity-name">
+                    Jaune • PARFAIT
+                </div>
 
-    initAudio();
+                <div class="rarity-rule">
+                    Écart ≤ 0,01 s
+                </div>
 
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
+            </div>
 
-    osc.type = type;
+            <div class="rarity-probability">
+                0,01 %
+            </div>
 
-    osc.frequency.setValueAtTime(
-        frequency,
-        audioCtx.currentTime
-    );
+        </div>
 
-    gain.gain.setValueAtTime(
-        volume,
-        audioCtx.currentTime
-    );
 
-    gain.gain.exponentialRampToValueAtTime(
-        .001,
-        audioCtx.currentTime + duration
-    );
+        <div class="rarity-row">
 
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+            <div class="rarity-dot dot-green"></div>
 
-    osc.start();
+            <div class="rarity-info">
 
-    osc.stop(
-        audioCtx.currentTime + duration
-    );
-}
+                <div class="rarity-name">
+                    Vert • EXCELLENT
+                </div>
 
-function startSound() {
+                <div class="rarity-rule">
+                    Écart ≤ 0,05 s
+                </div>
 
-    tone(440, .08, "sine", .08);
+            </div>
 
-    setTimeout(() => {
-        tone(660, .08, "sine", .08);
-    }, 80);
+            <div class="rarity-probability">
+                5 %
+            </div>
 
-}
+        </div>
 
-function hideSound() {
 
-    tone(220, .25, "sine", .05);
+        <div class="rarity-row">
 
-}
+            <div class="rarity-dot dot-orange"></div>
 
-function perfectSound() {
+            <div class="rarity-info">
 
-    tone(523, .12, "sine", .12);
+                <div class="rarity-name">
+                    Orange • PROCHE
+                </div>
 
-    setTimeout(() => {
-        tone(659, .12, "sine", .12);
-    }, 90);
+                <div class="rarity-rule">
+                    Écart ≤ 0,50 s
+                </div>
 
-    setTimeout(() => {
-        tone(784, .18, "sine", .15);
-    }, 180);
+            </div>
 
-}
+            <div class="rarity-probability">
+                25 %
+            </div>
 
-function goodSound() {
+        </div>
 
-    tone(440, .18, "triangle", .1);
 
-    setTimeout(() => {
-        tone(554, .15, "triangle", .08);
-    }, 100);
+        <div class="rarity-row">
 
-}
+            <div class="rarity-dot dot-red"></div>
 
-function badSound() {
+            <div class="rarity-info">
 
-    tone(180, .25, "sawtooth", .06);
+                <div class="rarity-name">
+                    Rouge • RATÉ
+                </div>
 
-    setTimeout(() => {
-        tone(120, .3, "sawtooth", .04);
-    }, 120);
+                <div class="rarity-rule">
+                    Écart &gt; 0,50 s
+                </div>
 
-}
+            </div>
 
-/* =========================
-   ELEMENTS
-========================= */
+            <div class="rarity-probability">
+                69,99 %
+            </div>
 
-const targetDisplay =
-    document.getElementById("target-display");
+        </div>
 
-const chrono =
-    document.getElementById("chrono");
 
-const chronoWrapper =
-    document.getElementById("chrono-wrapper");
+        <div class="perfect-explain">
+            <strong>Jaune = chrono parfait.</strong><br>
+            Tu es quasiment exactement sur
+            l'objectif. Bonne chance.
+        </div>
 
-const status =
-    document.getElementById("status");
+    </aside>
 
-const resultText =
-    document.getElementById("result-text");
 
-const btnStart =
-    document.getElementById("btn-start");
+    <div id="confetti-container"></div>
 
-const btnStop =
-    document.getElementById("btn-stop");
 
-const btnRestart =
-    document.getElementById("btn-restart");
+    <script>
 
-const precisionBar =
-    document.getElementById("precision-bar");
+        /* =========================================================
+           AUDIO
+        ========================================================= */
 
-const precisionFill =
-    document.getElementById("precision-fill");
+        let audioCtx = null;
 
-const comboDisplay =
-    document.getElementById("combo");
+        function initAudio() {
 
-const bestDisplay =
-    document.getElementById("best");
+            if (!audioCtx) {
 
-const gamesDisplay =
-    document.getElementById("games");
+                audioCtx =
+                    new (
+                        window.AudioContext ||
+                        window.webkitAudioContext
+                    )();
 
-const board =
-    document.getElementById("game-board");
+            }
 
-const particles =
-    document.getElementById("particles");
+            if (
+                audioCtx.state ===
+                "suspended"
+            ) {
 
-/* =========================
-   VARIABLES
-========================= */
+                audioCtx.resume();
 
-let targetTime = 0;
-let startTime = 0;
+            }
+        }
 
-let animationFrame;
 
-let running = false;
-let hidden = false;
-
-let combo = 0;
-let games = 0;
-
-let best = localStorage.getItem(
-    "chronoBest"
-);
-
-if (best !== null) {
-    best = parseFloat(best);
-}
-
-/* =========================
-   PARTICULES
-========================= */
-
-function createParticles(amount = 30) {
-
-    for (let i = 0; i < amount; i++) {
-
-        const particle =
-            document.createElement("div");
-
-        particle.className = "particle";
-
-        particle.style.left =
-            "50%";
-
-        particle.style.top =
-            "50%";
-
-        particle.style.setProperty(
-            "--x",
-            Math.random()
-        );
-
-        particle.style.setProperty(
-            "--y",
-            Math.random()
-        );
-
-        particle.style.color =
-            Math.random() > .5
-                ? "#38bdf8"
-                : "#22c55e";
-
-        particles.appendChild(
-            particle
-        );
-
-        setTimeout(() => {
-            particle.remove();
-        }, 1000);
-    }
-}
-
-/* =========================
-   NOUVELLE PARTIE
-========================= */
-
-function initGame() {
-
-    document.body.className = "";
-
-    board.classList.remove(
-        "pop",
-        "shake"
-    );
-
-    targetTime =
-        (Math.floor(
-            Math.random() * 71
-        ) + 30) / 10;
-
-    targetDisplay.textContent =
-        targetTime.toFixed(2) + " s";
-
-    chrono.textContent =
-        "0.00";
-
-    chrono.classList.remove(
-        "hidden-chrono"
-    );
-
-    btnStart.style.display =
-        "block";
-
-    btnStop.style.display =
-        "none";
-
-    btnRestart.style.display =
-        "none";
-
-    resultText.classList.remove(
-        "show"
-    );
-
-    precisionBar.style.opacity =
-        "0";
-
-    precisionFill.style.width =
-        "0%";
-
-    status.textContent =
-        "Appuie sur PRÊT pour commencer";
-
-    status.style.color =
-        "#94a3b8";
-
-    hidden = false;
-}
-
-/* =========================
-   START
-========================= */
-
-btnStart.addEventListener(
-    "click",
-    () => {
-
-        initAudio();
-
-        startSound();
-
-        btnStart.style.display =
-            "none";
-
-        btnStop.style.display =
-            "block";
-
-        status.textContent =
-            "Le chrono tourne...";
-
-        status.style.color =
-            "#38bdf8";
-
-        startTime =
-            performance.now();
-
-        running = true;
-
-        updateChrono();
-    }
-);
-
-/* =========================
-   CHRONO
-========================= */
-
-function updateChrono() {
-
-    if (!running)
-        return;
-
-    const elapsed =
-        (performance.now() -
-            startTime) / 1000;
-
-    if (!hidden) {
-
-        chrono.textContent =
-            elapsed.toFixed(2);
-
-    }
-
-    /* disparition à 1.5 seconde */
-
-    if (
-        elapsed >= 1.5 &&
-        !hidden
-    ) {
-
-        hidden = true;
-
-        chrono.classList.add(
-            "hidden-chrono"
-        );
-
-        status.textContent =
-            "Le temps est caché 👀";
-
-        hideSound();
-    }
-
-    animationFrame =
-        requestAnimationFrame(
-            updateChrono
-        );
-}
-
-/* =========================
-   STOP
-========================= */
-
-btnStop.addEventListener(
-    "click",
-    stopGame
-);
-
-function stopGame() {
-
-    if (!running)
-        return;
-
-    running = false;
-
-    cancelAnimationFrame(
-        animationFrame
-    );
-
-    const finalTime =
-        (performance.now() -
-            startTime) / 1000;
-
-    const difference =
-        Math.abs(
-            finalTime -
-            targetTime
-        );
-
-    games++;
-
-    gamesDisplay.textContent =
-        games;
-
-    chrono.textContent =
-        finalTime.toFixed(2);
-
-    chrono.classList.remove(
-        "hidden-chrono"
-    );
-
-    btnStop.style.display =
-        "none";
-
-    btnRestart.style.display =
-        "block";
-
-    precisionBar.style.opacity =
-        "1";
-
-    /*
-        0.00 = parfait
-        0.50 = déjà moyen
-        1.50+ = mauvais
-    */
-
-    const precision =
-        Math.max(
-            0,
-            100 -
-            (difference / 1.5) * 100
-        );
-
-    precisionFill.style.width =
-        precision + "%";
-
-    /* =====================
-       PARFAIT
-    ===================== */
-
-    if (difference <= .10) {
-
-        combo++;
-
-        document.body.className =
-            "perfect";
-
-        resultText.textContent =
-            difference === 0
-                ? "PERFECT ! 🎯"
-                : `INCROYABLE ! Écart : ${difference.toFixed(2)} s 🔥`;
-
-        resultText.style.color =
-            "#22c55e";
-
-        status.textContent =
-            "Timing absolument chirurgical.";
-
-        status.style.color =
-            "#22c55e";
-
-        comboDisplay.textContent =
-            combo + " 🔥";
-
-        board.classList.add(
-            "pop"
-        );
-
-        createParticles(45);
-
-        perfectSound();
-
-    }
-
-    /* =====================
-       BIEN
-    ===================== */
-
-    else if (difference <= .50) {
-
-        combo = 0;
-
-        document.body.className =
-            "good";
-
-        resultText.textContent =
-            `Pas mal ! Écart : ${difference.toFixed(2)} s`;
-
-        resultText.style.color =
-            "#f59e0b";
-
-        status.textContent =
-            finalTime > targetTime
-                ? "Un peu trop tard..."
-                : "Un peu trop tôt...";
-
-        status.style.color =
-            "#f59e0b";
-
-        comboDisplay.textContent =
-            "0 🔥";
-
-        board.classList.add(
-            "pop"
-        );
-
-        goodSound();
-
-    }
-
-    /* =====================
-       RATÉ
-    ===================== */
-
-    else {
-
-        combo = 0;
-
-        document.body.className =
-            "bad";
-
-        resultText.textContent =
-            finalTime > targetTime
-                ? `Trop tard ! +${difference.toFixed(2)} s ❌`
-                : `Trop tôt ! -${difference.toFixed(2)} s ❌`;
-
-        resultText.style.color =
-            "#ef4444";
-
-        status.textContent =
-            "Tu peux faire mieux.";
-
-        status.style.color =
-            "#ef4444";
-
-        comboDisplay.textContent =
-            "0 🔥";
-
-        board.classList.add(
-            "shake"
-        );
-
-        badSound();
-    }
-
-    /* =====================
-       RECORD
-    ===================== */
-
-    if (
-        best === null ||
-        difference < best
-    ) {
-
-        best = difference;
-
-        localStorage.setItem(
-            "chronoBest",
-            best
-        );
-
-        bestDisplay.textContent =
-            best.toFixed(2) + " s";
-
-    }
-
-    resultText.classList.add(
-        "show"
-    );
-}
-
-/* =========================
-   RESTART
-========================= */
-
-btnRestart.addEventListener(
-    "click",
-    () => {
-
-        tone(
-            600,
-            .08,
-            "sine",
-            .08
-        );
-
-        initGame();
-    }
-);
-
-/* =========================
-   CLAVIER
-========================= */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.code !==
-            "Space"
-        )
-            return;
-
-        event.preventDefault();
-
-        if (
-            !running &&
-            btnStart.style.display !==
-            "none"
+        function playTone(
+            frequency,
+            duration,
+            type = "sine",
+            volume = 0.07
         ) {
 
-            btnStart.click();
+            initAudio();
 
-        } else if (running) {
+            const oscillator =
+                audioCtx.createOscillator();
 
-            btnStop.click();
+            const gain =
+                audioCtx.createGain();
 
+            oscillator.type = type;
+
+            oscillator.frequency.setValueAtTime(
+                frequency,
+                audioCtx.currentTime
+            );
+
+            gain.gain.setValueAtTime(
+                volume,
+                audioCtx.currentTime
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                audioCtx.currentTime + duration
+            );
+
+            oscillator.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            oscillator.start();
+
+            oscillator.stop(
+                audioCtx.currentTime + duration
+            );
         }
-    }
-);
 
-/* =========================
-   RECORD AU CHARGEMENT
-========================= */
 
-if (best !== null) {
+        function playStartSound() {
 
-    bestDisplay.textContent =
-        best.toFixed(2) + " s";
+            playTone(
+                520,
+                0.08,
+                "sine",
+                0.07
+            );
 
-}
+            setTimeout(() => {
 
-/* =========================
-   INIT
-========================= */
+                playTone(
+                    690,
+                    0.10,
+                    "sine",
+                    0.075
+                );
 
-initGame();
+            }, 90);
+        }
 
-</script>
+
+        function playHideSound() {
+
+            playTone(
+                230,
+                0.22,
+                "sine",
+                0.045
+            );
+        }
+
+
+        function playGoodSound() {
+
+            playTone(
+                490,
+                0.12,
+                "triangle",
+                0.07
+            );
+
+            setTimeout(() => {
+
+                playTone(
+                    620,
+                    0.16,
+                    "triangle",
+                    0.07
+                );
+
+            }, 90);
+        }
+
+
+        function playPerfectSound() {
+
+            playTone(
+                523.25,
+                0.12,
+                "sine",
+                0.11
+            );
+
+            setTimeout(() => {
+
+                playTone(
+                    659.25,
+                    0.12,
+                    "sine",
+                    0.11
+                );
+
+            }, 90);
+
+            setTimeout(() => {
+
+                playTone(
+                    783.99,
+                    0.15,
+                    "sine",
+                    0.12
+                );
+
+            }, 180);
+
+            setTimeout(() => {
+
+                playTone(
+                    1046.5,
+                    0.30,
+                    "sine",
+                    0.12
+                );
+
+            }, 290);
+        }
+
+
+        function playBadSound() {
+
+            playTone(
+                180,
+                0.22,
+                "sawtooth",
+                0.05
+            );
+
+            setTimeout(() => {
+
+                playTone(
+                    120,
+                    0.26,
+                    "sawtooth",
+                    0.035
+                );
+
+            }, 100);
+        }
+
+
+        /* =========================================================
+           DOM
+        ========================================================= */
+
+        const chrono =
+            document.getElementById("chrono");
+
+        const targetDisplay =
+            document.getElementById("target-display");
+
+        const chronoWrapper =
+            document.getElementById("chrono-wrapper");
+
+        const status =
+            document.getElementById("status");
+
+        const bestDisplay =
+            document.getElementById("best");
+
+        const resultText =
+            document.getElementById("result-text");
+
+        const precisionBar =
+            document.getElementById("precision-bar");
+
+        const precisionFill =
+            document.getElementById("precision-fill");
+
+        const btnStart =
+            document.getElementById("btn-start");
+
+        const btnStop =
+            document.getElementById("btn-stop");
+
+        const btnRestart =
+            document.getElementById("btn-restart");
+
+        const confettiContainer =
+            document.getElementById(
+                "confetti-container"
+            );
+
+        const board =
+            document.getElementById(
+                "game-board"
+            );
+
+
+        /* =========================================================
+           VARIABLES
+        ========================================================= */
+
+        let targetTime = 0;
+        let startTime = 0;
+
+        let animationFrame = null;
+
+        let isRunning = false;
+        let isHidden = false;
+
+        let bestDifference =
+            localStorage.getItem(
+                "chronoBlindBest"
+            );
+
+        if (
+            bestDifference !== null
+        ) {
+
+            bestDifference =
+                Number(bestDifference);
+
+            bestDisplay.textContent =
+                bestDifference.toFixed(2) +
+                " s";
+        }
+
+
+        /* =========================================================
+           GENERATION DE L'OBJECTIF
+        ========================================================= */
+
+        function generateTarget() {
+
+            /*
+                Entre 3,00 s et 10,00 s
+                par pas de 0,10 s
+            */
+
+            const value =
+                Math.floor(
+                    Math.random() * 71
+                ) + 30;
+
+            return value / 10;
+        }
+
+
+        /* =========================================================
+           NOUVELLE PARTIE
+        ========================================================= */
+
+        function initGame() {
+
+            document.body.className = "";
+
+            board.classList.remove(
+                "pop",
+                "shake"
+            );
+
+            targetTime =
+                generateTarget();
+
+            targetDisplay.textContent =
+                targetTime.toFixed(2) +
+                " s";
+
+            chrono.textContent =
+                "0.00";
+
+            chrono.classList.remove(
+                "hidden-chrono"
+            );
+
+            btnStart.style.display =
+                "block";
+
+            btnStop.style.display =
+                "none";
+
+            btnRestart.style.display =
+                "none";
+
+            resultText.classList.remove(
+                "show"
+            );
+
+            precisionBar.style.opacity =
+                "0";
+
+            precisionFill.style.width =
+                "0%";
+
+            status.textContent =
+                "Clique sur « Démarrer ».";
+
+            status.style.color =
+                "var(--muted)";
+
+            isRunning = false;
+            isHidden = false;
+        }
+
+
+        /* =========================================================
+           DEMARRAGE
+        ========================================================= */
+
+        btnStart.addEventListener(
+            "click",
+            () => {
+
+                initAudio();
+
+                playStartSound();
+
+                btnStart.style.display =
+                    "none";
+
+                btnStop.style.display =
+                    "block";
+
+                status.textContent =
+                    "Le chrono tourne...";
+
+                status.style.color =
+                    "#d2d6dc";
+
+                startTime =
+                    performance.now();
+
+                isRunning = true;
+
+                isHidden = false;
+
+                updateChrono();
+            }
+        );
+
+
+        /* =========================================================
+           BOUCLE DU CHRONO
+        ========================================================= */
+
+        function updateChrono() {
+
+            if (!isRunning)
+                return;
+
+            const elapsed =
+                (
+                    performance.now() -
+                    startTime
+                ) / 1000;
+
+
+            /*
+                Les chiffres disparaissent
+                à EXACTEMENT 1 seconde.
+
+                La transition CSS dure 0,5 seconde.
+            */
+
+            if (
+                elapsed >= 1 &&
+                !isHidden
+            ) {
+
+                isHidden = true;
+
+                chrono.classList.add(
+                    "hidden-chrono"
+                );
+
+                status.textContent =
+                    "Temps masqué.";
+
+                status.style.color =
+                    "#999ea7";
+
+                playHideSound();
+            }
+
+
+            /*
+                Tant que le chrono est visible,
+                les chiffres sont mis à jour.
+            */
+
+            if (!isHidden) {
+
+                chrono.textContent =
+                    elapsed.toFixed(2);
+
+            }
+
+
+            animationFrame =
+                requestAnimationFrame(
+                    updateChrono
+                );
+        }
+
+
+        /* =========================================================
+           STOP
+        ========================================================= */
+
+        btnStop.addEventListener(
+            "click",
+            stopGame
+        );
+
+
+        function stopGame() {
+
+            if (!isRunning)
+                return;
+
+            isRunning = false;
+
+            cancelAnimationFrame(
+                animationFrame
+            );
+
+
+            const finalTime =
+                (
+                    performance.now() -
+                    startTime
+                ) / 1000;
+
+
+            const difference =
+                Math.abs(
+                    finalTime -
+                    targetTime
+                );
+
+
+            /*
+                On révèle le vrai temps.
+            */
+
+            chrono.textContent =
+                finalTime.toFixed(2);
+
+            chrono.classList.remove(
+                "hidden-chrono"
+            );
+
+
+            btnStop.style.display =
+                "none";
+
+            btnRestart.style.display =
+                "block";
+
+
+            precisionBar.style.opacity =
+                "1";
+
+
+            /*
+                Barre visuelle basée sur
+                un écart maximal de 0,50 s.
+            */
+
+            const precision =
+                Math.max(
+                    0,
+                    100 -
+                    (
+                        difference /
+                        0.5
+                    ) * 100
+                );
+
+            precisionFill.style.width =
+                precision + "%";
+
+
+            /*
+                Enregistre le meilleur
+                écart de toute la session.
+            */
+
+            if (
+                bestDifference === null ||
+                difference <
+                bestDifference
+            ) {
+
+                bestDifference =
+                    difference;
+
+                localStorage.setItem(
+                    "chronoBlindBest",
+                    bestDifference
+                );
+
+                bestDisplay.textContent =
+                    bestDifference.toFixed(2) +
+                    " s";
+            }
+
+
+            /* =====================================================
+               JAUNE = PARFAIT
+            ===================================================== */
+
+            if (
+                difference <= 0.01
+            ) {
+
+                document.body.className =
+                    "result-perfect";
+
+                resultText.textContent =
+                    "PARFAIT.  🎯";
+
+                resultText.style.color =
+                    "var(--yellow)";
+
+                status.textContent =
+                    "Tu étais pratiquement exactement dessus.";
+
+                status.style.color =
+                    "var(--yellow)";
+
+                precisionFill.style.backgroundColor =
+                    "var(--yellow)";
+
+                board.classList.add(
+                    "pop"
+                );
+
+                playPerfectSound();
+
+                launchConfetti();
+
+            }
+
+
+            /* =====================================================
+               VERT = EXCELLENT
+            ===================================================== */
+
+            else if (
+                difference <= 0.05
+            ) {
+
+                document.body.className =
+                    "result-green";
+
+                resultText.textContent =
+                    "Excellent !";
+
+                resultText.style.color =
+                    "var(--green)";
+
+                status.textContent =
+                    finalTime > targetTime
+                        ? "Un tout petit peu trop tard."
+                        : "Un tout petit peu trop tôt.";
+
+                status.style.color =
+                    "var(--green)";
+
+                precisionFill.style.backgroundColor =
+                    "var(--green)";
+
+                board.classList.add(
+                    "pop"
+                );
+
+                playGoodSound();
+
+            }
+
+
+            /* =====================================================
+               ORANGE = PROCHE
+            ===================================================== */
+
+            else if (
+                difference <= 0.50
+            ) {
+
+                document.body.className =
+                    "result-orange";
+
+                resultText.textContent =
+                    `Pas mal. Écart : ${difference.toFixed(2)} s`;
+
+                resultText.style.color =
+                    "var(--orange)";
+
+                status.textContent =
+                    finalTime > targetTime
+                        ? "Un peu trop tard."
+                        : "Un peu trop tôt.";
+
+                status.style.color =
+                    "var(--orange)";
+
+                precisionFill.style.backgroundColor =
+                    "var(--orange)";
+
+                board.classList.add(
+                    "pop"
+                );
+
+                playGoodSound();
+
+            }
+
+
+            /* =====================================================
+               ROUGE = RATE
+            ===================================================== */
+
+            else {
+
+                document.body.className =
+                    "result-red";
+
+                resultText.textContent =
+                    finalTime > targetTime
+                        ? `Trop tard ! +${difference.toFixed(2)} s`
+                        : `Trop tôt ! -${difference.toFixed(2)} s`;
+
+                resultText.style.color =
+                    "var(--red)";
+
+                status.textContent =
+                    "Essaie encore.";
+
+                status.style.color =
+                    "var(--red)";
+
+                precisionFill.style.backgroundColor =
+                    "var(--red)";
+
+                board.classList.add(
+                    "shake"
+                );
+
+                playBadSound();
+            }
+
+
+            resultText.classList.add(
+                "show"
+            );
+        }
+
+
+        /* =========================================================
+           CONFETTIS
+        ========================================================= */
+
+        function launchConfetti() {
+
+            const amount = 90;
+
+            for (
+                let i = 0;
+                i < amount;
+                i++
+            ) {
+
+                const piece =
+                    document.createElement(
+                        "div"
+                    );
+
+                piece.className =
+                    "confetti";
+
+                piece.style.left =
+                    Math.random() * 100 +
+                    "%";
+
+                piece.style.setProperty(
+                    "--drift",
+                    (
+                        Math.random() *
+                        300 -
+                        150
+                    ) + "px"
+                );
+
+                piece.style.setProperty(
+                    "--rotation",
+                    (
+                        Math.random() *
+                        1000 -
+                        500
+                    ) + "deg"
+                );
+
+                piece.style.setProperty(
+                    "--duration",
+                    (
+                        1.1 +
+                        Math.random() *
+                        0.9
+                    ) + "s"
+                );
+
+                piece.style.backgroundColor =
+                    pickConfettiColor();
+
+                piece.style.transform =
+                    `rotate(${Math.random() * 180}deg)`;
+
+                confettiContainer.appendChild(
+                    piece
+                );
+
+
+                setTimeout(
+                    () => {
+                        piece.remove();
+                    },
+                    2200
+                );
+            }
+        }
+
+
+        function pickConfettiColor() {
+
+            const colors = [
+                "#f4c542",
+                "#ffffff",
+                "#ff6b5f",
+                "#59d78c",
+                "#69aaf5"
+            ];
+
+            return colors[
+                Math.floor(
+                    Math.random() *
+                    colors.length
+                )
+            ];
+        }
+
+
+        /* =========================================================
+           NOUVELLE MANCHE
+        ========================================================= */
+
+        btnRestart.addEventListener(
+            "click",
+            () => {
+
+                initAudio();
+
+                playTone(
+                    620,
+                    0.08,
+                    "sine",
+                    0.06
+                );
+
+                initGame();
+            }
+        );
+
+
+        /* =========================================================
+           ESPACE
+        ========================================================= */
+
+        document.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (
+                    event.code !== "Space"
+                )
+                    return;
+
+                event.preventDefault();
+
+
+                if (
+                    !isRunning &&
+                    btnStart.style.display !==
+                    "none"
+                ) {
+
+                    btnStart.click();
+
+                    return;
+                }
+
+
+                if (isRunning) {
+
+                    btnStop.click();
+
+                }
+            }
+        );
+
+
+        /* =========================================================
+           INITIALISATION
+        ========================================================= */
+
+        initGame();
+
+    </script>
 
 </body>
 </html>
