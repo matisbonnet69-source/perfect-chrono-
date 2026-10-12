@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101114">
     <title>Chrono Blind Test</title>
 
     <style>
         :root {
             --bg: #101114;
             --panel: #181a1f;
-            --panel-light: #202329;
-            --border: #3a3d44;
             --text: #f3f4f6;
             --muted: #8b909a;
 
-            --red: #ff3b30;
-            --green: #38d27a;
-            --yellow: #f4c542;
-            --orange: #f4a62a;
+            /* COULEURS DES RESULTATS */
+            --red: #FF3030;
+            --green: #38D27A;
+            --yellow: #FFD700;
+            --orange: #FF9500;
         }
 
         * {
@@ -42,22 +42,17 @@
             background: var(--bg);
             color: var(--text);
 
-            font-family:
-                Inter,
-                "Segoe UI",
-                Arial,
-                sans-serif;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
 
             overflow-x: hidden;
             user-select: none;
 
-            transition:
-                background-color 0.45s ease;
+            transition: background-color 0.45s ease;
         }
 
-        /* =========================================================
-           LAYOUT
-        ========================================================= */
+        /* =====================================================
+           CARTE PRINCIPALE
+        ===================================================== */
 
         #game-board {
             width: min(470px, 100%);
@@ -66,11 +61,9 @@
 
             border: 1px solid #2b2e34;
             border-radius: 16px;
-
             padding: 30px;
 
-            box-shadow:
-                0 18px 40px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
 
             transition:
                 transform 0.2s ease,
@@ -78,9 +71,9 @@
                 box-shadow 0.25s ease;
         }
 
-        /* =========================================================
-           HEADER
-        ========================================================= */
+        /* =====================================================
+           EN-TETE
+        ===================================================== */
 
         .top-line {
             display: flex;
@@ -95,7 +88,6 @@
 
             font-size: 0.88rem;
             font-weight: 800;
-
             letter-spacing: 1.8px;
             text-transform: uppercase;
 
@@ -114,9 +106,9 @@
             color: var(--muted);
         }
 
-        /* =========================================================
+        /* =====================================================
            OBJECTIF
-        ========================================================= */
+        ===================================================== */
 
         .target-section {
             margin-top: 24px;
@@ -125,10 +117,8 @@
 
         .target-label {
             font-size: 0.68rem;
-
             letter-spacing: 2px;
             text-transform: uppercase;
-
             color: #7f848e;
         }
 
@@ -137,19 +127,17 @@
 
             font-size: 3rem;
             font-weight: 850;
-
             letter-spacing: 0.5px;
 
             color: #f0f2f5;
         }
 
-        /* =========================================================
-           VRAI CADRE DU CHRONO
-        ========================================================= */
+        /* =====================================================
+           CADRE DU CHRONO
+        ===================================================== */
 
         #chrono-wrapper {
             position: relative;
-
             height: 150px;
 
             margin-top: 22px;
@@ -176,7 +164,6 @@
                 transform 0.15s ease;
         }
 
-        /* petite ligne interne de style écran */
         #chrono-wrapper::before {
             content: "";
 
@@ -189,32 +176,23 @@
             pointer-events: none;
         }
 
-        /* =========================================================
-           CHIFFRES TYPE REVEIL
-        ========================================================= */
+        /* =====================================================
+           CHIFFRES STYLE REVEIL
+        ===================================================== */
 
         #chrono {
             position: relative;
             z-index: 2;
 
-            font-family:
-                "Courier New",
-                Consolas,
-                monospace;
-
+            font-family: "Courier New", Consolas, monospace;
             font-size: clamp(4rem, 12vw, 5.5rem);
             font-weight: 900;
-
             letter-spacing: 3px;
 
             color: var(--red);
 
             font-variant-numeric: tabular-nums;
 
-            /*
-                Effet contour noir autour des chiffres
-                pour donner un vrai aspect afficheur.
-            */
             text-shadow:
                 2px 0 0 #050505,
                 -2px 0 0 #050505,
@@ -222,7 +200,7 @@
                 0 -2px 0 #050505,
                 2px 2px 0 #050505,
                 -2px -2px 0 #050505,
-                0 0 8px rgba(255, 59, 48, 0.18);
+                0 0 8px rgba(255, 48, 48, 0.18);
 
             transition:
                 opacity 0.5s ease,
@@ -230,20 +208,17 @@
                 transform 0.5s ease;
         }
 
-        /*
-            IMPORTANT :
-            seul le chiffre disparaît.
-            Le cadre reste parfaitement visible.
-        */
+        /* Seuls les chiffres disparaissent */
+
         .hidden-chrono {
             opacity: 0;
             filter: blur(8px);
             transform: scale(0.96);
         }
 
-        /* =========================================================
-           STATUS
-        ========================================================= */
+        /* =====================================================
+           MESSAGE D'ETAT
+        ===================================================== */
 
         #status {
             min-height: 21px;
@@ -255,13 +230,12 @@
 
             color: var(--muted);
 
-            transition:
-                color 0.25s ease;
+            transition: color 0.25s ease;
         }
 
-        /* =========================================================
+        /* =====================================================
            RECORD
-        ========================================================= */
+        ===================================================== */
 
         .record-line {
             display: flex;
@@ -284,17 +258,15 @@
             color: #dce0e6;
         }
 
-        /* =========================================================
+        /* =====================================================
            BOUTONS
-        ========================================================= */
+        ===================================================== */
 
         button {
             width: 100%;
-
             padding: 15px 18px;
 
             border-radius: 10px;
-
             border: 1px solid transparent;
 
             font-family: inherit;
@@ -322,8 +294,7 @@
             background: #f1f2f4;
             color: #111318;
 
-            box-shadow:
-                0 5px 14px rgba(0, 0, 0, 0.22);
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.22);
         }
 
         #btn-start:hover {
@@ -333,20 +304,18 @@
         #btn-stop {
             display: none;
 
-            background: #df3028;
+            background: #E52222;
             color: white;
 
-            box-shadow:
-                0 6px 18px rgba(223, 48, 40, 0.22);
+            box-shadow: 0 6px 18px rgba(255, 48, 48, 0.22);
         }
 
         #btn-stop:hover {
-            filter: brightness(1.08);
+            background: #FF3030;
         }
 
         #btn-restart {
             display: none;
-
             margin-top: 10px;
 
             background: #25282e;
@@ -359,13 +328,12 @@
             background: #2d3037;
         }
 
-        /* =========================================================
+        /* =====================================================
            RESULTAT
-        ========================================================= */
+        ===================================================== */
 
         #result-text {
             min-height: 31px;
-
             margin-top: 18px;
 
             text-align: center;
@@ -374,7 +342,6 @@
             font-weight: 850;
 
             opacity: 0;
-
             transform: translateY(5px);
 
             transition:
@@ -387,25 +354,22 @@
             transform: translateY(0);
         }
 
-        /* =========================================================
+        /* =====================================================
            BARRE DE PRECISION
-        ========================================================= */
+        ===================================================== */
 
         #precision-bar {
             height: 5px;
-
             margin-top: 10px;
 
             overflow: hidden;
-
             border-radius: 999px;
 
             background: #282b31;
 
             opacity: 0;
 
-            transition:
-                opacity 0.25s ease;
+            transition: opacity 0.25s ease;
         }
 
         #precision-fill {
@@ -413,7 +377,6 @@
             height: 100%;
 
             border-radius: inherit;
-
             background: var(--green);
 
             transition:
@@ -421,13 +384,12 @@
                 background-color 0.25s ease;
         }
 
-        /* =========================================================
-           PANNEAU DES PROBABILITES
-        ========================================================= */
+        /* =====================================================
+           TABLEAU DES RARETES
+        ===================================================== */
 
         #rarity-panel {
             width: 220px;
-
             padding: 18px;
 
             background: #17191d;
@@ -435,8 +397,7 @@
             border: 1px solid #2d3036;
             border-radius: 14px;
 
-            box-shadow:
-                0 16px 35px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.25);
         }
 
         .rarity-title {
@@ -456,7 +417,6 @@
             margin-bottom: 15px;
 
             font-size: 0.7rem;
-
             line-height: 1.4;
 
             color: #727780;
@@ -471,23 +431,21 @@
             border-top: 1px solid #25282e;
         }
 
-        .rarity-row:first-of-type {
-            border-top: none;
-        }
-
         .rarity-dot {
             width: 10px;
             height: 10px;
 
             flex: 0 0 auto;
-
             margin-right: 10px;
 
             border-radius: 50%;
         }
 
+        /* Couleurs du tableau */
+
         .dot-yellow {
             background: var(--yellow);
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
         }
 
         .dot-green {
@@ -510,13 +468,11 @@
         .rarity-name {
             font-size: 0.76rem;
             font-weight: 800;
-
             color: #e3e5e8;
         }
 
         .rarity-rule {
             margin-top: 2px;
-
             font-size: 0.67rem;
             color: #717680;
         }
@@ -530,52 +486,80 @@
             color: #c9cdd3;
         }
 
+        /* Mise en valeur de la rareté légendaire */
+
+        .rarity-row.legendary {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 215, 0, 0.10),
+                rgba(255, 215, 0, 0)
+            );
+
+            border-radius: 6px;
+            padding-left: 7px;
+            padding-right: 5px;
+        }
+
+        .rarity-row.legendary .rarity-name,
+        .rarity-row.legendary .rarity-probability {
+            color: var(--yellow);
+        }
+
         .perfect-explain {
             margin-top: 14px;
             padding: 10px;
 
             border-radius: 9px;
 
-            background: rgba(244, 197, 66, 0.08);
-            border: 1px solid rgba(244, 197, 66, 0.17);
+            background: rgba(255, 215, 0, 0.12);
+            border: 1px solid rgba(255, 215, 0, 0.32);
 
             font-size: 0.68rem;
             line-height: 1.45;
 
-            color: #a4a8af;
+            color: #c8bd90;
         }
 
         .perfect-explain strong {
             color: var(--yellow);
         }
 
-        /* =========================================================
-           ETATS DU JEU
-        ========================================================= */
+        /* =====================================================
+           RESULTATS : COULEURS CLAIREMENT DISTINCTES
+        ===================================================== */
+
+        /* JAUNE DORE : PARFAIT */
 
         body.result-perfect {
-            background: #4b4018;
+            background: #594700;
         }
 
-        body.result-green {
-            background: #123523;
-        }
+        body.result-perfect #game-board {
+            border-color: rgba(255, 215, 0, 0.55);
 
-        body.result-orange {
-            background: #38290f;
-        }
-
-        body.result-red {
-            background: #341517;
+            box-shadow:
+                0 18px 45px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(255, 215, 0, 0.12);
         }
 
         body.result-perfect #chrono-wrapper {
-            border-color: #b59a38;
+            border-color: #FFD700;
 
             box-shadow:
-                inset 0 0 0 2px #17130a,
-                inset 0 0 24px rgba(244, 197, 66, 0.06),
-                0 0 22px rgba(244, 197, 66, 0.12);
+                inset 0 0 0 2px #211900,
+                inset 0 0 24px rgba(255, 215, 0, 0.10),
+                0 0 25px rgba(255, 215, 0, 0.22);
+        }
+
+        body.result-perfect #result-text {
+            color: var(--yellow);
+            text-shadow: 0 0 16px rgba(255, 215, 0, 0.22);
+        }
+
+        /* VERT : EXCELLENT */
+
+        body.result-green {
+            background: #123523;
         }
 
         body.result-green #chrono-wrapper {
@@ -586,17 +570,55 @@
                 0 0 20px rgba(56, 210, 122, 0.08);
         }
 
+        /* ORANGE : PROCHE, PLUS JAUNE QUE ROUGE */
+
+        body.result-orange {
+            background: #462900;
+        }
+
+        body.result-orange #game-board {
+            border-color: rgba(255, 149, 0, 0.35);
+        }
+
         body.result-orange #chrono-wrapper {
-            border-color: #8d6e38;
+            border-color: #FF9500;
+
+            box-shadow:
+                inset 0 0 0 2px #1c1000,
+                inset 0 0 20px rgba(255, 149, 0, 0.08),
+                0 0 18px rgba(255, 149, 0, 0.12);
+        }
+
+        body.result-orange #result-text {
+            color: var(--orange);
+        }
+
+        /* ROUGE FRANC : GROS ECART */
+
+        body.result-red {
+            background: #440609;
+        }
+
+        body.result-red #game-board {
+            border-color: rgba(255, 48, 48, 0.38);
         }
 
         body.result-red #chrono-wrapper {
-            border-color: #894348;
+            border-color: #FF3030;
+
+            box-shadow:
+                inset 0 0 0 2px #1c0506,
+                inset 0 0 20px rgba(255, 48, 48, 0.08),
+                0 0 18px rgba(255, 48, 48, 0.10);
         }
 
-        /* =========================================================
-           ANIMATIONS RESULTAT
-        ========================================================= */
+        body.result-red #result-text {
+            color: var(--red);
+        }
+
+        /* =====================================================
+           ANIMATIONS
+        ===================================================== */
 
         .pop {
             animation: popResult 0.35s ease-out;
@@ -621,8 +643,7 @@
         }
 
         @keyframes shakeResult {
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateX(0);
             }
 
@@ -635,16 +656,15 @@
             }
         }
 
-        /* =========================================================
+        /* =====================================================
            CONFETTIS
-        ========================================================= */
+        ===================================================== */
 
         #confetti-container {
             position: fixed;
             inset: 0;
 
             pointer-events: none;
-
             overflow: hidden;
 
             z-index: 100;
@@ -652,7 +672,6 @@
 
         .confetti {
             position: absolute;
-
             top: -20px;
 
             width: 8px;
@@ -663,60 +682,36 @@
             animation:
                 confettiFall
                 var(--duration)
-                cubic-bezier(.15,.65,.25,1)
+                cubic-bezier(.15, .65, .25, 1)
                 forwards;
-
-            transform:
-                translateX(0)
-                rotate(0deg);
         }
 
         @keyframes confettiFall {
-
             from {
-                transform:
-                    translate3d(
-                        0,
-                        0,
-                        0
-                    )
-                    rotate(0deg);
+                transform: translate3d(0, 0, 0) rotate(0deg);
             }
 
             to {
                 transform:
-                    translate3d(
-                        var(--drift),
-                        110vh,
-                        0
-                    )
-                    rotate(
-                        var(--rotation)
-                    );
+                    translate3d(var(--drift), 110vh, 0)
+                    rotate(var(--rotation));
             }
         }
 
-        /* =========================================================
+        /* =====================================================
            MOBILE
-        ========================================================= */
+        ===================================================== */
 
         @media (max-width: 760px) {
-
             body {
                 flex-direction: column;
-
                 justify-content: center;
 
-                padding:
-                    18px 14px 22px;
-
+                padding: 18px 14px 22px;
                 gap: 14px;
             }
 
-            #game-board {
-                width: min(470px, 100%);
-            }
-
+            #game-board,
             #rarity-panel {
                 width: min(470px, 100%);
             }
@@ -727,7 +722,6 @@
         }
 
         @media (max-width: 480px) {
-
             #game-board {
                 padding: 22px;
             }
@@ -750,6 +744,17 @@
                 padding: 15px;
             }
         }
+
+        /* Respecte les préférences de réduction des animations */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 
@@ -759,10 +764,7 @@
 
         <div class="top-line">
             <h1 class="title">Chrono Blind Test</h1>
-
-            <div class="keyboard-tip">
-                ESPACE
-            </div>
+            <div class="keyboard-tip">ESPACE</div>
         </div>
 
         <div class="subtitle">
@@ -770,42 +772,23 @@
         </div>
 
         <section class="target-section">
-            <div class="target-label">
-                Objectif
-            </div>
-
-            <div id="target-display">
-                0.00 s
-            </div>
+            <div class="target-label">Objectif</div>
+            <div id="target-display">0.00 s</div>
         </section>
 
         <section id="chrono-wrapper">
-            <div id="chrono">
-                0.00
-            </div>
+            <div id="chrono">0.00</div>
         </section>
 
-        <div id="status">
-            Clique sur « Démarrer ».
-        </div>
+        <div id="status">Clique sur « Démarrer ».</div>
 
         <div class="record-line">
-            <span class="record-label">
-                Meilleur écart
-            </span>
-
-            <span id="best">
-                —
-            </span>
+            <span class="record-label">Meilleur écart</span>
+            <span id="best">—</span>
         </div>
 
-        <button id="btn-start">
-            Démarrer
-        </button>
-
-        <button id="btn-stop">
-            Stop
-        </button>
+        <button id="btn-start">Démarrer</button>
+        <button id="btn-stop">Stop</button>
 
         <div id="result-text"></div>
 
@@ -813,158 +796,92 @@
             <div id="precision-fill"></div>
         </div>
 
-        <button id="btn-restart">
-            Nouvelle manche
-        </button>
+        <button id="btn-restart">Nouvelle manche</button>
 
     </main>
 
-
     <aside id="rarity-panel">
 
-        <h2 class="rarity-title">
-            Rareté du chrono
-        </h2>
+        <h2 class="rarity-title">Rareté du chrono</h2>
 
         <div class="rarity-subtitle">
-            Probabilités indicatives pour donner
-            une idée de la difficulté.
+            Probabilités indicatives pour donner une idée
+            de la difficulté.
         </div>
 
-        <div class="rarity-row">
-
+        <div class="rarity-row legendary">
             <div class="rarity-dot dot-yellow"></div>
 
             <div class="rarity-info">
-
-                <div class="rarity-name">
-                    Jaune • PARFAIT
-                </div>
-
-                <div class="rarity-rule">
-                    Écart ≤ 0,01 s
-                </div>
-
+                <div class="rarity-name">Jaune • PARFAIT</div>
+                <div class="rarity-rule">Écart ≤ 0,01 s</div>
             </div>
 
-            <div class="rarity-probability">
-                0,01 %
-            </div>
-
+            <div class="rarity-probability">0,01 %</div>
         </div>
 
-
         <div class="rarity-row">
-
             <div class="rarity-dot dot-green"></div>
 
             <div class="rarity-info">
-
-                <div class="rarity-name">
-                    Vert • EXCELLENT
-                </div>
-
-                <div class="rarity-rule">
-                    Écart ≤ 0,05 s
-                </div>
-
+                <div class="rarity-name">Vert • EXCELLENT</div>
+                <div class="rarity-rule">Écart ≤ 0,05 s</div>
             </div>
 
-            <div class="rarity-probability">
-                5 %
-            </div>
-
+            <div class="rarity-probability">5 %</div>
         </div>
 
-
         <div class="rarity-row">
-
             <div class="rarity-dot dot-orange"></div>
 
             <div class="rarity-info">
-
-                <div class="rarity-name">
-                    Orange • PROCHE
-                </div>
-
-                <div class="rarity-rule">
-                    Écart ≤ 0,50 s
-                </div>
-
+                <div class="rarity-name">Orange • PROCHE</div>
+                <div class="rarity-rule">Écart ≤ 0,50 s</div>
             </div>
 
-            <div class="rarity-probability">
-                25 %
-            </div>
-
+            <div class="rarity-probability">25 %</div>
         </div>
 
-
         <div class="rarity-row">
-
             <div class="rarity-dot dot-red"></div>
 
             <div class="rarity-info">
-
-                <div class="rarity-name">
-                    Rouge • RATÉ
-                </div>
-
-                <div class="rarity-rule">
-                    Écart &gt; 0,50 s
-                </div>
-
+                <div class="rarity-name">Rouge • RATÉ</div>
+                <div class="rarity-rule">Écart > 0,50 s</div>
             </div>
 
-            <div class="rarity-probability">
-                69,99 %
-            </div>
-
+            <div class="rarity-probability">69,99 %</div>
         </div>
 
-
         <div class="perfect-explain">
-            <strong>Jaune = chrono parfait.</strong><br>
-            Tu es quasiment exactement sur
-            l'objectif. Bonne chance.
+            <strong>★ Jaune doré = chrono parfait.</strong><br>
+            La rareté légendaire : ton écart avec l'objectif
+            ne dépasse pas 0,01 seconde.
         </div>
 
     </aside>
 
-
     <div id="confetti-container"></div>
 
-
     <script>
-
-        /* =========================================================
+        /* =====================================================
            AUDIO
-        ========================================================= */
+        ===================================================== */
 
         let audioCtx = null;
 
         function initAudio() {
-
             if (!audioCtx) {
-
-                audioCtx =
-                    new (
-                        window.AudioContext ||
-                        window.webkitAudioContext
-                    )();
-
+                audioCtx = new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
             }
 
-            if (
-                audioCtx.state ===
-                "suspended"
-            ) {
-
+            if (audioCtx.state === "suspended") {
                 audioCtx.resume();
-
             }
         }
-
 
         function playTone(
             frequency,
@@ -972,14 +889,10 @@
             type = "sine",
             volume = 0.07
         ) {
-
             initAudio();
 
-            const oscillator =
-                audioCtx.createOscillator();
-
-            const gain =
-                audioCtx.createGain();
+            const oscillator = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
 
             oscillator.type = type;
 
@@ -1002,480 +915,219 @@
             gain.connect(audioCtx.destination);
 
             oscillator.start();
-
-            oscillator.stop(
-                audioCtx.currentTime + duration
-            );
+            oscillator.stop(audioCtx.currentTime + duration);
         }
-
 
         function playStartSound() {
-
-            playTone(
-                520,
-                0.08,
-                "sine",
-                0.07
-            );
+            playTone(520, 0.08, "sine", 0.07);
 
             setTimeout(() => {
-
-                playTone(
-                    690,
-                    0.10,
-                    "sine",
-                    0.075
-                );
-
+                playTone(690, 0.10, "sine", 0.075);
             }, 90);
         }
-
 
         function playHideSound() {
-
-            playTone(
-                230,
-                0.22,
-                "sine",
-                0.045
-            );
+            playTone(230, 0.22, "sine", 0.045);
         }
-
 
         function playGoodSound() {
-
-            playTone(
-                490,
-                0.12,
-                "triangle",
-                0.07
-            );
+            playTone(490, 0.12, "triangle", 0.07);
 
             setTimeout(() => {
-
-                playTone(
-                    620,
-                    0.16,
-                    "triangle",
-                    0.07
-                );
-
+                playTone(620, 0.16, "triangle", 0.07);
             }, 90);
         }
 
-
         function playPerfectSound() {
-
-            playTone(
-                523.25,
-                0.12,
-                "sine",
-                0.11
-            );
+            playTone(523.25, 0.12, "sine", 0.11);
 
             setTimeout(() => {
-
-                playTone(
-                    659.25,
-                    0.12,
-                    "sine",
-                    0.11
-                );
-
+                playTone(659.25, 0.12, "sine", 0.11);
             }, 90);
 
             setTimeout(() => {
-
-                playTone(
-                    783.99,
-                    0.15,
-                    "sine",
-                    0.12
-                );
-
+                playTone(783.99, 0.15, "sine", 0.12);
             }, 180);
 
             setTimeout(() => {
-
-                playTone(
-                    1046.5,
-                    0.30,
-                    "sine",
-                    0.12
-                );
-
+                playTone(1046.5, 0.30, "sine", 0.12);
             }, 290);
         }
 
-
         function playBadSound() {
-
-            playTone(
-                180,
-                0.22,
-                "sawtooth",
-                0.05
-            );
+            playTone(180, 0.22, "sawtooth", 0.05);
 
             setTimeout(() => {
-
-                playTone(
-                    120,
-                    0.26,
-                    "sawtooth",
-                    0.035
-                );
-
+                playTone(120, 0.26, "sawtooth", 0.035);
             }, 100);
         }
 
+        /* =====================================================
+           ELEMENTS
+        ===================================================== */
 
-        /* =========================================================
-           DOM
-        ========================================================= */
+        const chrono = document.getElementById("chrono");
+        const targetDisplay = document.getElementById("target-display");
+        const status = document.getElementById("status");
+        const bestDisplay = document.getElementById("best");
+        const resultText = document.getElementById("result-text");
+        const precisionBar = document.getElementById("precision-bar");
+        const precisionFill = document.getElementById("precision-fill");
+        const btnStart = document.getElementById("btn-start");
+        const btnStop = document.getElementById("btn-stop");
+        const btnRestart = document.getElementById("btn-restart");
+        const confettiContainer = document.getElementById("confetti-container");
+        const board = document.getElementById("game-board");
 
-        const chrono =
-            document.getElementById("chrono");
-
-        const targetDisplay =
-            document.getElementById("target-display");
-
-        const chronoWrapper =
-            document.getElementById("chrono-wrapper");
-
-        const status =
-            document.getElementById("status");
-
-        const bestDisplay =
-            document.getElementById("best");
-
-        const resultText =
-            document.getElementById("result-text");
-
-        const precisionBar =
-            document.getElementById("precision-bar");
-
-        const precisionFill =
-            document.getElementById("precision-fill");
-
-        const btnStart =
-            document.getElementById("btn-start");
-
-        const btnStop =
-            document.getElementById("btn-stop");
-
-        const btnRestart =
-            document.getElementById("btn-restart");
-
-        const confettiContainer =
-            document.getElementById(
-                "confetti-container"
-            );
-
-        const board =
-            document.getElementById(
-                "game-board"
-            );
-
-
-        /* =========================================================
-           VARIABLES
-        ========================================================= */
+        /* =====================================================
+           VARIABLES DU JEU
+        ===================================================== */
 
         let targetTime = 0;
         let startTime = 0;
-
         let animationFrame = null;
-
         let isRunning = false;
         let isHidden = false;
 
-        let bestDifference =
-            localStorage.getItem(
-                "chronoBlindBest"
-            );
+        let bestDifference = localStorage.getItem("chronoBlindBest");
 
-        if (
-            bestDifference !== null
-        ) {
-
-            bestDifference =
-                Number(bestDifference);
+        if (bestDifference !== null) {
+            bestDifference = Number(bestDifference);
 
             bestDisplay.textContent =
-                bestDifference.toFixed(2) +
-                " s";
+                bestDifference.toFixed(2) + " s";
         }
 
-
-        /* =========================================================
+        /* =====================================================
            GENERATION DE L'OBJECTIF
-        ========================================================= */
+        ===================================================== */
 
         function generateTarget() {
-
-            /*
-                Entre 3,00 s et 10,00 s
-                par pas de 0,10 s
-            */
-
-            const value =
-                Math.floor(
-                    Math.random() * 71
-                ) + 30;
-
+            // Entre 3,00 s et 10,00 s, par pas de 0,10 s
+            const value = Math.floor(Math.random() * 71) + 30;
             return value / 10;
         }
 
-
-        /* =========================================================
-           NOUVELLE PARTIE
-        ========================================================= */
+        /* =====================================================
+           NOUVELLE MANCHE
+        ===================================================== */
 
         function initGame() {
-
             document.body.className = "";
 
-            board.classList.remove(
-                "pop",
-                "shake"
-            );
+            board.classList.remove("pop", "shake");
 
-            targetTime =
-                generateTarget();
+            targetTime = generateTarget();
 
             targetDisplay.textContent =
-                targetTime.toFixed(2) +
-                " s";
+                targetTime.toFixed(2) + " s";
 
-            chrono.textContent =
-                "0.00";
+            chrono.textContent = "0.00";
+            chrono.classList.remove("hidden-chrono");
 
-            chrono.classList.remove(
-                "hidden-chrono"
-            );
+            btnStart.style.display = "block";
+            btnStop.style.display = "none";
+            btnRestart.style.display = "none";
 
-            btnStart.style.display =
-                "block";
+            resultText.classList.remove("show");
 
-            btnStop.style.display =
-                "none";
+            precisionBar.style.opacity = "0";
+            precisionFill.style.width = "0%";
+            precisionFill.style.backgroundColor = "var(--green)";
 
-            btnRestart.style.display =
-                "none";
-
-            resultText.classList.remove(
-                "show"
-            );
-
-            precisionBar.style.opacity =
-                "0";
-
-            precisionFill.style.width =
-                "0%";
-
-            status.textContent =
-                "Clique sur « Démarrer ».";
-
-            status.style.color =
-                "var(--muted)";
+            status.textContent = "Clique sur « Démarrer ».";
+            status.style.color = "var(--muted)";
 
             isRunning = false;
             isHidden = false;
+
+            confettiContainer.innerHTML = "";
         }
 
-
-        /* =========================================================
+        /* =====================================================
            DEMARRAGE
-        ========================================================= */
+        ===================================================== */
 
-        btnStart.addEventListener(
-            "click",
-            () => {
+        btnStart.addEventListener("click", () => {
+            initAudio();
+            playStartSound();
 
-                initAudio();
+            btnStart.style.display = "none";
+            btnStop.style.display = "block";
 
-                playStartSound();
+            status.textContent = "Le chrono tourne...";
+            status.style.color = "#d2d6dc";
 
-                btnStart.style.display =
-                    "none";
+            startTime = performance.now();
+            isRunning = true;
+            isHidden = false;
 
-                btnStop.style.display =
-                    "block";
+            updateChrono();
+        });
 
-                status.textContent =
-                    "Le chrono tourne...";
-
-                status.style.color =
-                    "#d2d6dc";
-
-                startTime =
-                    performance.now();
-
-                isRunning = true;
-
-                isHidden = false;
-
-                updateChrono();
-            }
-        );
-
-
-        /* =========================================================
-           BOUCLE DU CHRONO
-        ========================================================= */
+        /* =====================================================
+           CHRONO : DISPARITION APRES 1 SECONDE
+        ===================================================== */
 
         function updateChrono() {
+            if (!isRunning) return;
 
-            if (!isRunning)
-                return;
+            const elapsed = (performance.now() - startTime) / 1000;
 
-            const elapsed =
-                (
-                    performance.now() -
-                    startTime
-                ) / 1000;
-
-
-            /*
-                Les chiffres disparaissent
-                à EXACTEMENT 1 seconde.
-
-                La transition CSS dure 0,5 seconde.
-            */
-
-            if (
-                elapsed >= 1 &&
-                !isHidden
-            ) {
-
+            if (elapsed >= 1 && !isHidden) {
                 isHidden = true;
+                chrono.classList.add("hidden-chrono");
 
-                chrono.classList.add(
-                    "hidden-chrono"
-                );
-
-                status.textContent =
-                    "Temps masqué.";
-
-                status.style.color =
-                    "#999ea7";
+                status.textContent = "Temps masqué.";
+                status.style.color = "#999ea7";
 
                 playHideSound();
             }
 
-
-            /*
-                Tant que le chrono est visible,
-                les chiffres sont mis à jour.
-            */
-
             if (!isHidden) {
-
-                chrono.textContent =
-                    elapsed.toFixed(2);
-
+                chrono.textContent = elapsed.toFixed(2);
             }
 
-
-            animationFrame =
-                requestAnimationFrame(
-                    updateChrono
-                );
+            animationFrame = requestAnimationFrame(updateChrono);
         }
 
+        /* =====================================================
+           ARRET DU CHRONO
+        ===================================================== */
 
-        /* =========================================================
-           STOP
-        ========================================================= */
-
-        btnStop.addEventListener(
-            "click",
-            stopGame
-        );
-
+        btnStop.addEventListener("click", stopGame);
 
         function stopGame() {
-
-            if (!isRunning)
-                return;
+            if (!isRunning) return;
 
             isRunning = false;
+            cancelAnimationFrame(animationFrame);
 
-            cancelAnimationFrame(
-                animationFrame
+            const finalTime = (performance.now() - startTime) / 1000;
+            const difference = Math.abs(finalTime - targetTime);
+
+            chrono.textContent = finalTime.toFixed(2);
+            chrono.classList.remove("hidden-chrono");
+
+            btnStop.style.display = "none";
+            btnRestart.style.display = "block";
+
+            precisionBar.style.opacity = "1";
+
+            const precision = Math.max(
+                0,
+                100 - (difference / 0.5) * 100
             );
 
+            precisionFill.style.width = precision + "%";
 
-            const finalTime =
-                (
-                    performance.now() -
-                    startTime
-                ) / 1000;
-
-
-            const difference =
-                Math.abs(
-                    finalTime -
-                    targetTime
-                );
-
-
-            /*
-                On révèle le vrai temps.
-            */
-
-            chrono.textContent =
-                finalTime.toFixed(2);
-
-            chrono.classList.remove(
-                "hidden-chrono"
-            );
-
-
-            btnStop.style.display =
-                "none";
-
-            btnRestart.style.display =
-                "block";
-
-
-            precisionBar.style.opacity =
-                "1";
-
-
-            /*
-                Barre visuelle basée sur
-                un écart maximal de 0,50 s.
-            */
-
-            const precision =
-                Math.max(
-                    0,
-                    100 -
-                    (
-                        difference /
-                        0.5
-                    ) * 100
-                );
-
-            precisionFill.style.width =
-                precision + "%";
-
-
-            /*
-                Enregistre le meilleur
-                écart de toute la session.
-            */
+            /* ENREGISTRE LE MEILLEUR ECART */
 
             if (
                 bestDifference === null ||
-                difference <
-                bestDifference
+                difference < bestDifference
             ) {
-
-                bestDifference =
-                    difference;
+                bestDifference = difference;
 
                 localStorage.setItem(
                     "chronoBlindBest",
@@ -1483,317 +1135,182 @@
                 );
 
                 bestDisplay.textContent =
-                    bestDifference.toFixed(2) +
-                    " s";
+                    bestDifference.toFixed(2) + " s";
             }
 
+            /* JAUNE DORE : PARFAIT, ECART <= 0,01 s */
 
-            /* =====================================================
-               JAUNE = PARFAIT
-            ===================================================== */
+            if (difference <= 0.01) {
+                document.body.className = "result-perfect";
 
-            if (
-                difference <= 0.01
-            ) {
-
-                document.body.className =
-                    "result-perfect";
-
-                resultText.textContent =
-                    "PARFAIT.  🎯";
-
-                resultText.style.color =
-                    "var(--yellow)";
+                resultText.textContent = "PARFAIT ! ★";
+                resultText.style.color = "var(--yellow)";
 
                 status.textContent =
-                    "Tu étais pratiquement exactement dessus.";
+                    "Légendaire. Tu étais quasiment exactement dessus.";
 
-                status.style.color =
-                    "var(--yellow)";
+                status.style.color = "var(--yellow)";
+                precisionFill.style.backgroundColor = "var(--yellow)";
 
-                precisionFill.style.backgroundColor =
-                    "var(--yellow)";
-
-                board.classList.add(
-                    "pop"
-                );
+                board.classList.add("pop");
 
                 playPerfectSound();
-
                 launchConfetti();
-
             }
 
+            /* VERT : EXCELLENT, ECART <= 0,05 s */
 
-            /* =====================================================
-               VERT = EXCELLENT
-            ===================================================== */
+            else if (difference <= 0.05) {
+                document.body.className = "result-green";
 
-            else if (
-                difference <= 0.05
-            ) {
+                resultText.textContent = "Excellent !";
+                resultText.style.color = "var(--green)";
 
-                document.body.className =
-                    "result-green";
+                status.textContent = finalTime > targetTime
+                    ? "Un tout petit peu trop tard."
+                    : "Un tout petit peu trop tôt.";
 
-                resultText.textContent =
-                    "Excellent !";
+                status.style.color = "var(--green)";
+                precisionFill.style.backgroundColor = "var(--green)";
 
-                resultText.style.color =
-                    "var(--green)";
-
-                status.textContent =
-                    finalTime > targetTime
-                        ? "Un tout petit peu trop tard."
-                        : "Un tout petit peu trop tôt.";
-
-                status.style.color =
-                    "var(--green)";
-
-                precisionFill.style.backgroundColor =
-                    "var(--green)";
-
-                board.classList.add(
-                    "pop"
-                );
+                board.classList.add("pop");
 
                 playGoodSound();
-
             }
 
+            /* ORANGE : PROCHE, ECART <= 0,50 s */
 
-            /* =====================================================
-               ORANGE = PROCHE
-            ===================================================== */
-
-            else if (
-                difference <= 0.50
-            ) {
-
-                document.body.className =
-                    "result-orange";
+            else if (difference <= 0.50) {
+                document.body.className = "result-orange";
 
                 resultText.textContent =
                     `Pas mal. Écart : ${difference.toFixed(2)} s`;
 
-                resultText.style.color =
-                    "var(--orange)";
+                resultText.style.color = "var(--orange)";
 
-                status.textContent =
-                    finalTime > targetTime
-                        ? "Un peu trop tard."
-                        : "Un peu trop tôt.";
+                status.textContent = finalTime > targetTime
+                    ? "Un peu trop tard."
+                    : "Un peu trop tôt.";
 
-                status.style.color =
-                    "var(--orange)";
+                status.style.color = "var(--orange)";
+                precisionFill.style.backgroundColor = "var(--orange)";
 
-                precisionFill.style.backgroundColor =
-                    "var(--orange)";
-
-                board.classList.add(
-                    "pop"
-                );
+                board.classList.add("pop");
 
                 playGoodSound();
-
             }
 
-
-            /* =====================================================
-               ROUGE = RATE
-            ===================================================== */
+            /* ROUGE : ECART SUPERIEUR A 0,50 s */
 
             else {
+                document.body.className = "result-red";
 
-                document.body.className =
-                    "result-red";
+                resultText.textContent = finalTime > targetTime
+                    ? `Trop tard ! +${difference.toFixed(2)} s`
+                    : `Trop tôt ! -${difference.toFixed(2)} s`;
 
-                resultText.textContent =
-                    finalTime > targetTime
-                        ? `Trop tard ! +${difference.toFixed(2)} s`
-                        : `Trop tôt ! -${difference.toFixed(2)} s`;
+                resultText.style.color = "var(--red)";
+                status.textContent = "Essaie encore.";
+                status.style.color = "var(--red)";
+                precisionFill.style.backgroundColor = "var(--red)";
 
-                resultText.style.color =
-                    "var(--red)";
-
-                status.textContent =
-                    "Essaie encore.";
-
-                status.style.color =
-                    "var(--red)";
-
-                precisionFill.style.backgroundColor =
-                    "var(--red)";
-
-                board.classList.add(
-                    "shake"
-                );
+                board.classList.add("shake");
 
                 playBadSound();
             }
 
-
-            resultText.classList.add(
-                "show"
-            );
+            resultText.classList.add("show");
         }
 
-
-        /* =========================================================
-           CONFETTIS
-        ========================================================= */
+        /* =====================================================
+           CONFETTIS DU RESULTAT PARFAIT
+        ===================================================== */
 
         function launchConfetti() {
-
             const amount = 90;
 
-            for (
-                let i = 0;
-                i < amount;
-                i++
-            ) {
+            for (let i = 0; i < amount; i++) {
+                const piece = document.createElement("div");
 
-                const piece =
-                    document.createElement(
-                        "div"
-                    );
+                piece.className = "confetti";
 
-                piece.className =
-                    "confetti";
-
-                piece.style.left =
-                    Math.random() * 100 +
-                    "%";
+                piece.style.left = Math.random() * 100 + "%";
 
                 piece.style.setProperty(
                     "--drift",
-                    (
-                        Math.random() *
-                        300 -
-                        150
-                    ) + "px"
+                    (Math.random() * 300 - 150) + "px"
                 );
 
                 piece.style.setProperty(
                     "--rotation",
-                    (
-                        Math.random() *
-                        1000 -
-                        500
-                    ) + "deg"
+                    (Math.random() * 1000 - 500) + "deg"
                 );
 
                 piece.style.setProperty(
                     "--duration",
-                    (
-                        1.1 +
-                        Math.random() *
-                        0.9
-                    ) + "s"
+                    (1.1 + Math.random() * 0.9) + "s"
                 );
 
-                piece.style.backgroundColor =
-                    pickConfettiColor();
+                piece.style.backgroundColor = pickConfettiColor();
 
-                piece.style.transform =
-                    `rotate(${Math.random() * 180}deg)`;
+                confettiContainer.appendChild(piece);
 
-                confettiContainer.appendChild(
-                    piece
-                );
-
-
-                setTimeout(
-                    () => {
-                        piece.remove();
-                    },
-                    2200
-                );
+                setTimeout(() => {
+                    piece.remove();
+                }, 2200);
             }
         }
 
-
         function pickConfettiColor() {
-
             const colors = [
-                "#f4c542",
-                "#ffffff",
-                "#ff6b5f",
-                "#59d78c",
-                "#69aaf5"
+                "#FFD700",
+                "#FFF1A6",
+                "#FFFFFF",
+                "#FFB800",
+                "#FF6B5F",
+                "#69AAF5"
             ];
 
             return colors[
-                Math.floor(
-                    Math.random() *
-                    colors.length
-                )
+                Math.floor(Math.random() * colors.length)
             ];
         }
 
-
-        /* =========================================================
+        /* =====================================================
            NOUVELLE MANCHE
-        ========================================================= */
+        ===================================================== */
 
-        btnRestart.addEventListener(
-            "click",
-            () => {
+        btnRestart.addEventListener("click", () => {
+            initAudio();
+            playTone(620, 0.08, "sine", 0.06);
+            initGame();
+        });
 
-                initAudio();
+        /* =====================================================
+           RACCOURCI ESPACE
+        ===================================================== */
 
-                playTone(
-                    620,
-                    0.08,
-                    "sine",
-                    0.06
-                );
+        document.addEventListener("keydown", (event) => {
+            if (event.code !== "Space") return;
 
-                initGame();
+            event.preventDefault();
+
+            if (
+                !isRunning &&
+                btnStart.style.display !== "none"
+            ) {
+                btnStart.click();
+                return;
             }
-        );
 
-
-        /* =========================================================
-           ESPACE
-        ========================================================= */
-
-        document.addEventListener(
-            "keydown",
-            (event) => {
-
-                if (
-                    event.code !== "Space"
-                )
-                    return;
-
-                event.preventDefault();
-
-
-                if (
-                    !isRunning &&
-                    btnStart.style.display !==
-                    "none"
-                ) {
-
-                    btnStart.click();
-
-                    return;
-                }
-
-
-                if (isRunning) {
-
-                    btnStop.click();
-
-                }
+            if (isRunning) {
+                btnStop.click();
             }
-        );
+        });
 
-
-        /* =========================================================
+        /* =====================================================
            INITIALISATION
-        ========================================================= */
+        ===================================================== */
 
         initGame();
 
